@@ -1,0 +1,31 @@
+McSiMusic
+MVP:
+1) Handle mp3 (Folders structure without deep)
+	1.1) Main folder on default
+	1.2) Add, delete (multiple)
+2) Listen to mp3
+	2.1) Playlists - All, Folder
+	2.2) Next, Previous, Rewind
+	2.3) Pause
+	2.4) Volume
+	2.5) Rewind bar as wave
+3) Functions
+	3.1) Cut
+	3.2) Change speed
+	3.3) Mix tracks
+	3.4) Only save as new!
+	3.5) Get BPM 
+	3.6) Download
+4) About (Read about all used libraries
+	
+	
+Technical Reqs
+1) Angular
+2) Node.js
+3) Typescript
+4) BD
+5) Users (Google Auth)
+6) Mobile Markup
+7) howler.js on fe
+8) web-bpm to handle bpm
+9) audiomaker to merge, cut
