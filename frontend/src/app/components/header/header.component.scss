@@ -1,0 +1,33 @@
+@import "src/styles";
+
+:host {
+    height: 72px;
+    padding: 0 24px;
+    background-color: $bgColor;
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    .logo {
+        img {
+            height: 48px;
+        }
+    }
+
+    nav ul {
+        display: flex;
+        padding: 0;
+        margin: 0 0 0 24px;
+
+        li {
+            height: 100%;
+            padding: 16px;
+            list-style-type: none; 
+
+            a {
+                color: $textColor;
+                text-decoration: none;
+            }
+        }
+    }
+}
