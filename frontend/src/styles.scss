@@ -1,0 +1,12 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+    --mcsimusic-primary-color: #f5b316;
+    --mcsimusic-text-color: #e7e5e5;
+    --mcsimusic-bg-color: #504d4d;
+    --mcsimusic-border-color: #646363;
+}
+
+$primaryColor: var(--mcsimusic-primary-color);
+$bgColor: var(--mcsimusic-bg-color);
+$borderColor: var(--mcsimusic-border-color);
+$textColor: var(--mcsimusic-text-color);
