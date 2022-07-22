@@ -5,8 +5,10 @@
     padding: 0 24px;
     background-color: $bgColor;
     width: 100%;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
+    border-bottom: 1px solid $borderColor;
 
     .logo {
         img {

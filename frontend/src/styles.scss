@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-body {
+html {
     --mcsimusic-primary-color: #f5b316;
     --mcsimusic-text-color: #e7e5e5;
     --mcsimusic-bg-color: #504d4d;
@@ -8,6 +8,13 @@ body {
     font-family: 'Roboto', sans-serif;
     padding: 0;
     margin: 0;
+    width: 100vw;
+    height: 100vh;
+
+    body {
+        display: flex;
+        margin: 0;
+    }
 }
 
 $primaryColor: var(--mcsimusic-primary-color);

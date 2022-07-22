@@ -1,0 +1,41 @@
+:host {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    .google-login {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #4285F4;
+        height: 40px;
+        padding-right: 8px;
+        margin-top: 24px;
+        cursor: pointer;
+        text-decoration: none;
+
+        &:hover .google-logo {
+            background-image: url('/assets/btn_google_dark_focus_ios.svg')
+        }
+
+        &:active .google-logo {
+            background-image: url('/assets/btn_google_dark_pressed_ios.svg')
+        }
+
+        .google-logo {
+            width: 40px;
+            height: 40px;
+            background-image: url('/assets/btn_google_dark_normal_ios.svg');
+            background-size: contain;
+        }
+
+        .google-caption {
+            margin-left: 8px;
+            font-weight: 500;
+            color: white;
+        }
+    }
+}

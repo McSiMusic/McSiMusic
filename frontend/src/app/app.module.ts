@@ -9,6 +9,7 @@ import { PlayerComponent } from './pages/player/player.component';
 import { EditorComponent } from './pages/editor/editor.component';
 import { AboutComponent } from './pages/about/about.component';
 import { BrowserComponent } from './pages/browser/browser.component';
+import { LoginComponent } from './pages/login/login.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { BrowserComponent } from './pages/browser/browser.component';
     EditorComponent,
     AboutComponent,
     BrowserComponent,
+    LoginComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [],
