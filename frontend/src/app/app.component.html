@@ -1,4 +1,9 @@
-<app-header *ngIf="isLoggedIn"></app-header>
-<div class="content">
-    <router-outlet></router-outlet>
-</div>
+<ng-container *ngIf="isPending">
+    <app-preloader></app-preloader>
+</ng-container>
+<ng-container *ngIf="!isPending">
+    <app-header *ngIf="isAuthorized"></app-header>
+    <div class="content">
+        <router-outlet></router-outlet>
+    </div>
+</ng-container>
