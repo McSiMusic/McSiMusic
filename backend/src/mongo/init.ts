@@ -4,7 +4,10 @@ import mongoose, { Schema } from "mongoose";
 const connectionString = config().parsed?.MONGO_CONNECTION_STRING!;
 const userSchema = new Schema({
   name: String,
+  id: String,
+  picture: String,
 });
+export const User = mongoose.model("User", userSchema, "User");
 
 export const initMongo = async () => {
   const connection = mongoose
@@ -12,10 +15,4 @@ export const initMongo = async () => {
     .then(() => {
       console.log("mongodb connection established");
     });
-
-  const MyModel = mongoose.model("User", userSchema, "User");
-  MyModel.find({}, (err: unknown, data: unknown) => console.log(data));
-
-  const user = new MyModel({ name: "McSim" });
-  user.save();
 };
