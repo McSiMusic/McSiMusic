@@ -1,0 +1,22 @@
+<div class="tracks" *ngIf='!isLoading && (tracks$ | async) as tracks; else loading'>
+    <div class="header-row row">
+        <div *ngFor="let descriptor of tableDescriptor" class="header-cell cell {{descriptor.cellClass}}"
+            [ngClass]="{ primary: descriptor.primary }">
+            {{ descriptor.displayName }}
+        </div>
+    </div>
+    <div *ngFor="let track of tracks; let i = index" class="row">
+        <div *ngFor="let descriptor of tableDescriptor" class="cell {{descriptor.cellClass}}"
+            [ngClass]="{ primary: descriptor.primary }">
+            {{ getConvertedValue(track[descriptor.key], descriptor) }}
+            
+        </div>
+    </div>
+</div>
+<div class="tracks-action-panel">
+    <app-upload (onUpload)="onUpload($event)">Upload</app-upload>
+</div>
+
+<ng-template #loading>
+    <app-preloader></app-preloader>
+</ng-template>

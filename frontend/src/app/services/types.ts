@@ -12,8 +12,9 @@ export enum AuthStatus {
 }
 
 export interface Track {
+  _id: string;
   name: string;
   duration: number;
-  id: string;
   userId: string;
+  date: number;
 }

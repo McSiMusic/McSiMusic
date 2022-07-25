@@ -17,6 +17,8 @@ import { MenuContentComponent } from './ui-components/menu/menu-content/menu-con
 import { PortalRootDirective } from './services/portal/PortalRoot';
 import { ButtonComponent } from './ui-components/button/button.component';
 import { UploadComponent } from './ui-components/upload/upload.component';
+import { FoldersComponent } from './pages/browser/folders/folders.component';
+import { TracksComponent } from './pages/browser/tracks/tracks.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { UploadComponent } from './ui-components/upload/upload.component';
     PortalRootDirective,
     ButtonComponent,
     UploadComponent,
+    FoldersComponent,
+    TracksComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [],

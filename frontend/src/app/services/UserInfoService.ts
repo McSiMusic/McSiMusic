@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { of, takeUntil, takeWhile } from 'rxjs';
+import { BehaviorSubject, of, takeUntil, takeWhile } from 'rxjs';
 import { Track, User } from './types';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -7,12 +7,14 @@ import { environment } from 'src/environments/environment';
 @Injectable({ providedIn: 'root' })
 export class UserInfoService {
   private _tracksUrl = `${environment.backUrl}/tracks`;
+  currentFolder = new BehaviorSubject<string | null>(null);
 
   constructor(private _http: HttpClient) {}
 
   private _userInfo: User | null = null;
   setUserInfo(userInfo: User | null) {
     this._userInfo = userInfo;
+    this.currentFolder.next(this._userInfo?.folders[0]!);
   }
 
   get userInfo() {

@@ -1,0 +1,64 @@
+@import "src/styles";
+
+:host {
+    display: flex;
+    flex-direction: column;    
+    color: $textColor;
+    
+
+    .tracks {
+        font-weight: 400;            
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .row {
+            display: flex;
+            flex-direction: row;
+            border-bottom: 1px solid $borderColor;
+
+            &:not(.header-row) {
+                cursor: pointer;
+
+                &:hover {
+                    box-shadow: 0 0 2px $primaryColor;
+                    box-sizing: content-box;
+                }
+            }
+
+            
+            .cell {
+                border-left: 1px solid $borderColor;
+                padding: 12px 16px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                text-align: left;
+                box-sizing: content-box;
+
+
+                &.primary {
+                    flex: 1;
+                }
+
+                &.date {
+                    width: 120px;
+                }
+
+                &.duration {
+                    width: 100px;
+                }
+            }
+        }
+    }
+
+    .tracks-action-panel {
+        border-top: solid 1px $borderColor;
+        height: 72px;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        padding: 12px 24px;
+        box-sizing: border-box;
+    }
+}
