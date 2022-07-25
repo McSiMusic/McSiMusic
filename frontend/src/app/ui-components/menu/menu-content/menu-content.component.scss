@@ -1,0 +1,19 @@
+@import "src/styles";
+
+#dropdown-content {
+    position: absolute;
+    border: 1px solid $borderColor;
+    border-radius: 4px;
+    background-color: $bgColor;
+    transform-origin: center;
+
+    .menu-item {
+        padding: 16px;
+        color: $textColor;
+        cursor: pointer;
+
+        &:active, &:hover, &:focus {
+            color: $primaryColor
+        }
+    }
+}

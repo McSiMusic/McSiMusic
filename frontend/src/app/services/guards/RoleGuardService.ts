@@ -4,14 +4,20 @@ import { AuthService } from '../AuthService';
 import { AuthStatus } from '../types';
 import { Role, RouteData } from './types';
 import { EMPTY, map } from 'rxjs';
+import { PortalService } from '../portal/PortalService';
 
 @Injectable({
   providedIn: 'root',
 })
 export class RoleGuardService implements CanActivate {
-  constructor(public _authService: AuthService, public router: Router) {}
+  constructor(
+    public _authService: AuthService,
+    public router: Router,
+    private _portalService: PortalService
+  ) {}
 
   canActivate(route: ActivatedRouteSnapshot) {
+    this._portalService.clear();
     return this._authService.auth().pipe(
       map((status) => {
         const data = route.data as RouteData;

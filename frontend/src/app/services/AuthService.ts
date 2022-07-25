@@ -11,8 +11,9 @@ const COOKIE_NAME = 'auth_token';
 })
 export class AuthService {
   private _authStatus = AuthStatus.Pending;
-  private _authUrl = `${environment.backUrl}/auth`;
+  private _authUrl = `${environment.backUrl}/auth/login`;
   private _loginUrl = `${environment.backUrl}/auth/me`;
+  private _logoutUrl = `${environment.backUrl}/auth/logout`;
   private _userInfo: User | null = null;
 
   constructor(private _httpClient: HttpClient, private _router: Router) {}
@@ -23,17 +24,37 @@ export class AuthService {
     return this._httpClient
       .get<User | null>(this._loginUrl, {
         withCredentials: true,
-        observe: 'response',
       })
       .pipe(
-        map((r) => {
+        map((result) => {
           this._authStatus = AuthStatus.Authorized;
-          this._userInfo = r.body;
+          this._userInfo = result;
           return this._authStatus;
         }),
         catchError((e: HttpErrorResponse, caught) => {
           this._authStatus = AuthStatus.Unauthorized;
           this._userInfo = null;
+          return of(this._authStatus);
+        })
+      );
+  };
+
+  logout = () => {
+    if (this._authStatus === AuthStatus.Unauthorized)
+      return of(this._authStatus);
+
+    return this._httpClient
+      .get<User | null>(this._logoutUrl, {
+        withCredentials: true,
+      })
+      .pipe(
+        map(() => {
+          this._authStatus = AuthStatus.Unauthorized;
+          this._userInfo = null;
+          this._router.navigate(['login']);
+          return this._authStatus;
+        }),
+        catchError((e: HttpErrorResponse, caught) => {
           return of(this._authStatus);
         })
       );

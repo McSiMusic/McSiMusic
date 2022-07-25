@@ -12,6 +12,9 @@ import { BrowserComponent } from './pages/browser/browser.component';
 import { LoginComponent } from './pages/login/login.component';
 import { PreloaderComponent } from './components/preloader/preloader.component';
 import { PreloaderLogoComponent } from './components/preloader/components/preloader-logo/preloader-logo.component';
+import { MenuComponent } from './ui-components/menu/menu.component';
+import { MenuContentComponent } from './ui-components/menu/menu-content/menu-content.component';
+import { PortalRootDirective } from './services/portal/PortalRoot';
 
 @NgModule({
   declarations: [
@@ -24,6 +27,9 @@ import { PreloaderLogoComponent } from './components/preloader/components/preloa
     LoginComponent,
     PreloaderComponent,
     PreloaderLogoComponent,
+    MenuComponent,
+    MenuContentComponent,
+    PortalRootDirective,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [],

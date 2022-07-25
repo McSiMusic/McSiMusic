@@ -39,8 +39,13 @@ export const initAuthEndpoint = (express: Express) => {
     }
   });
 
-  express.get("/auth", (req, res) => {
+  express.get("/auth/login", (req, res) => {
     res.writeHead(301, { Location: authorizationUrl });
+    res.end();
+  });
+
+  express.get("/auth/logout", (req, res) => {
+    res.clearCookie(COOKIE_NAME);
     res.end();
   });
 
