@@ -4,6 +4,7 @@ import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import { initAuthEndpoint } from "./auth/auth";
 import { initMongo } from "./mongo/init";
+import { initTrackController } from "./trackController/track";
 
 const conf = config().parsed;
 
@@ -18,6 +19,7 @@ app.get("/", (req, res) => {
 
 initAuthEndpoint(app);
 initMongo();
+initTrackController(app);
 
 app.listen(parseInt(conf?.PORT || "5000"), conf?.HOST || "localhost", () => {
   console.log("started");
