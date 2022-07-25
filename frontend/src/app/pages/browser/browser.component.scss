@@ -1,0 +1,84 @@
+@import "src/styles";
+
+:host {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+
+    .folders-container {
+        width: 480px;
+        display: flex;
+        flex-direction: column;
+        border-right: solid 1px $borderColor;
+
+        .folders-header {
+            height: 72px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            justify-items: center;
+            flex-direction: row;
+            border-bottom: solid 1px $borderColor;
+            box-sizing: border-box;
+
+            .folders-caption {
+                color: $textColor
+            }
+
+            .folders-add {
+                margin-left: auto;
+                width: 18px;
+                height: 18px;
+                background-image: url('/assets/plus-button.svg');
+            }
+        }
+
+        .folders {
+            .folder {
+                padding: 12px 24px;
+                border-bottom: solid 1px $borderColor;
+                display: flex;
+                align-items: center;
+                justify-items: center;
+
+                &.active { 
+                    .folder-caption  {
+                        color: $primaryColor;
+                    }
+                }
+
+                .folder-caption {
+                    color: $textColor;
+                }
+
+                .folder-delete {
+                    margin-left: auto;
+                    width: 18px;
+                    height: 18px;
+                    background-image: url('/assets/delete-button.svg');
+                }
+
+            }
+        }
+    }
+
+    .tracks-container {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+
+        .tracks {
+            flex: 1
+        }
+
+        .tracks-action-panel {
+            border-top: solid 1px $borderColor;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            padding: 12px 24px;
+            box-sizing: border-box;
+        }
+    }
+}

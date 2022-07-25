@@ -1,1 +1,27 @@
-<p>browser works!</p>
+<div class="folders-container">
+    <app-preloader *ngIf="foldersLoading"></app-preloader>
+    <div class="folders-header" *ngIf="!foldersLoading">
+        <div class="folders-caption">Folders</div>
+        <div class="folders-add"></div>
+    </div>
+    <div class="folders">
+        <div class="folder" *ngFor="let folder of folders" [ngClass]="{ active: isCurrentFolder(folder) }">
+            <div class="folder-caption">{{ folder }}</div>
+            <div class="folder-delete"></div>            
+        </div>
+    </div>
+</div>
+<div class="tracks-container">
+    <div class="tracks" *ngIf='(tracks$ | async) as tracks; else loading'>
+        <div *ngFor="let track of tracks; let i = index">
+            {{ track.name }}/{{ track.duration }}
+        </div>
+    </div>
+    <div class="tracks-action-panel">
+        <app-upload (onUpload)="onUpload($event)">Upload</app-upload>
+    </div>
+</div>
+
+<ng-template #loading>
+    <app-preloader></app-preloader>
+</ng-template>

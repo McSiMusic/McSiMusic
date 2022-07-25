@@ -1,4 +1,4 @@
-import { google } from "googleapis";
+import { google, oauth2_v2 } from "googleapis";
 import { Express } from "express";
 import { config } from "dotenv";
 import url from "url";
@@ -26,13 +26,14 @@ export const initAuthEndpoint = (express: Express) => {
     redirect_uri: redirectUrl,
   });
 
-  express.get("/auth/me", (req, res) => {
+  express.get("/auth/me", async (req, res) => {
     try {
       const decoded = jwt.verify(
         req.cookies[COOKIE_NAME],
         conf?.JWT_SECRET || "SECRET"
-      );
-      return res.send(decoded);
+      ) as oauth2_v2.Schema$Userinfo;
+
+      res.send(await User.findOne({ id: decoded.id }));
     } catch (err) {
       console.log(err);
       res.send(401);
@@ -67,7 +68,7 @@ export const initAuthEndpoint = (express: Express) => {
 
     tokens.access_token;
     if (user === null) {
-      new User({ id, picture, name }).save();
+      new User({ id, picture, name, folders: ["Root"] }).save();
     }
 
     res.cookie(COOKIE_NAME, token, {

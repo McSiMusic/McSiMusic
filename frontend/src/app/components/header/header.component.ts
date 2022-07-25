@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UserInfoService } from 'src/app/services/UserInfoService';
 import { MenuItem } from 'src/app/ui-components/menu/types';
 import { AuthService } from '../../services/AuthService';
 import { PortalService } from '../../services/portal/PortalService';
@@ -11,6 +12,7 @@ import { PortalService } from '../../services/portal/PortalService';
 export class HeaderComponent implements OnInit {
   constructor(
     private _authService: AuthService,
+    private _userInfoService: UserInfoService,
     private _portalService: PortalService
   ) {}
 
@@ -25,7 +27,7 @@ export class HeaderComponent implements OnInit {
   ];
 
   get userPicture() {
-    return this._authService.userInfo?.picture;
+    return this._userInfoService.userInfo?.picture;
   }
 
   ngOnInit(): void {}

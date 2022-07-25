@@ -1,0 +1,11 @@
+<app-button (click)="uploader.click()">
+    <ng-content></ng-content>
+</app-button>
+<input 
+    hidden 
+    type="file" 
+    #uploader
+    (change)="uploadFile($event)"
+    multiple="true"
+    accept=".mp3,audio/*"  
+/>

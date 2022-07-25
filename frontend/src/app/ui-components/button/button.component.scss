@@ -1,0 +1,17 @@
+@import "src/styles";
+
+:host {
+    display: flex;
+    min-width: 16px;
+    min-height: 8px;
+    padding: 12px;
+    border: 1px solid $borderColor;
+    color: $textColor;
+    border-radius: 8px;
+    user-select: none;
+    cursor: pointer;
+
+    &:active, &:focus, &:hover {
+        color: $primaryColor;
+    }
+}

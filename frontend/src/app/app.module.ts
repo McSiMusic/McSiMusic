@@ -15,6 +15,8 @@ import { PreloaderLogoComponent } from './components/preloader/components/preloa
 import { MenuComponent } from './ui-components/menu/menu.component';
 import { MenuContentComponent } from './ui-components/menu/menu-content/menu-content.component';
 import { PortalRootDirective } from './services/portal/PortalRoot';
+import { ButtonComponent } from './ui-components/button/button.component';
+import { UploadComponent } from './ui-components/upload/upload.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +32,8 @@ import { PortalRootDirective } from './services/portal/PortalRoot';
     MenuComponent,
     MenuContentComponent,
     PortalRootDirective,
+    ButtonComponent,
+    UploadComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule],
   providers: [],

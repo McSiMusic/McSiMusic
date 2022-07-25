@@ -11,10 +11,7 @@ import { AuthStatus } from 'src/app/services/types';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  test$: Observable<any>;
-  constructor(private _http: HttpClient, private _authService: AuthService) {
-    this.test$ = this._http.get(environment.baseUrl, { responseType: 'text' });
-  }
+  constructor(private _http: HttpClient, private _authService: AuthService) {}
 
   get isAuthorized() {
     return this._authService.authStatus === AuthStatus.Authorized;
