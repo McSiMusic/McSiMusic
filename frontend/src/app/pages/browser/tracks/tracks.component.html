@@ -9,9 +9,9 @@
         <div *ngFor="let descriptor of tableDescriptor" class="cell {{descriptor.cellClass}}"
             [ngClass]="{ primary: descriptor.primary }">
             {{ getConvertedValue(track[descriptor.key], descriptor) }}
-            
         </div>
     </div>
+    <app-button (click)="loadNextPage()">Load More</app-button>
 </div>
 <div class="tracks-action-panel">
     <app-upload (onUpload)="onUpload($event)">Upload</app-upload>

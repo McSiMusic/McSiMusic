@@ -25,9 +25,10 @@ export class UserInfoService {
     return this._userInfo?.folders;
   }
 
-  getTracks(folder: string) {
+  getTracks(folder: string, page: number, size = 10) {
+    const offset = page * size;
     return this._http.get<Track[]>(this._tracksUrl, {
-      params: { folder: folder },
+      params: { folder, offset, size },
       withCredentials: true,
     });
   }

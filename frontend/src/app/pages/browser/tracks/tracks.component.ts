@@ -1,6 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { UserInfoService } from 'src/app/services/UserInfoService';
-import { mergeMap, of } from 'rxjs';
+import {
+  mergeMap,
+  of,
+  BehaviorSubject,
+  merge,
+  combineLatest,
+  reduce,
+  scan,
+} from 'rxjs';
 import { tableDescriptor, TrackPropDescriptor } from './consts';
 import { DomSanitizer } from '@angular/platform-browser';
 
@@ -12,6 +20,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 export class TracksComponent implements OnInit {
   constructor(private _userInfoService: UserInfoService) {}
 
+  private _page = new BehaviorSubject(0);
   tableDescriptor = tableDescriptor;
   isLoading = false;
 
@@ -19,8 +28,9 @@ export class TracksComponent implements OnInit {
     return this._userInfoService.currentFolder;
   }
 
-  tracks$ = this._currentFolder.pipe(
-    mergeMap((f) => (f ? this._userInfoService.getTracks(f) : of([])))
+  tracks$ = combineLatest([this._currentFolder, this._page]).pipe(
+    mergeMap(([f, p]) => (f ? this._userInfoService.getTracks(f, p) : of([]))),
+    scan((acc, tracks) => [...acc, ...tracks])
   );
 
   getConvertedValue = (value: any, descriptor: TrackPropDescriptor) => {
@@ -37,5 +47,10 @@ export class TracksComponent implements OnInit {
 
     this.isLoading = true;
   };
+
+  loadNextPage() {
+    this._page.next(this._page.value + 1);
+  }
+
   ngOnInit(): void {}
 }
