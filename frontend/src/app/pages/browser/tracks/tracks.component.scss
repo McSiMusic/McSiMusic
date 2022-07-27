@@ -3,14 +3,14 @@
 :host {
     display: flex;
     flex-direction: column;    
-    color: $textColor;
-    
+    color: $textColor;    
 
     .tracks {
         font-weight: 400;            
         flex: 1;
         display: flex;
         flex-direction: column;
+        overflow: auto;
 
         .row {
             display: flex;

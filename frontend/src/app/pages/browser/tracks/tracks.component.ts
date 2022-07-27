@@ -10,7 +10,7 @@ import {
   scan,
 } from 'rxjs';
 import { tableDescriptor, TrackPropDescriptor } from './consts';
-import { DomSanitizer } from '@angular/platform-browser';
+import { IntersectionService } from 'src/app/services/IntersectionService';
 
 @Component({
   selector: 'app-tracks',
@@ -18,7 +18,10 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: ['./tracks.component.scss'],
 })
 export class TracksComponent implements OnInit {
-  constructor(private _userInfoService: UserInfoService) {}
+  constructor(
+    private _userInfoService: UserInfoService,
+    private _interSectionService: IntersectionService
+  ) {}
 
   private _page = new BehaviorSubject(0);
   tableDescriptor = tableDescriptor;
