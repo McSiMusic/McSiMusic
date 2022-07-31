@@ -2,12 +2,14 @@ $primaryColor: var(--mcsimusic-primary-color);
 $bgColor: var(--mcsimusic-bg-color);
 $borderColor: var(--mcsimusic-border-color);
 $textColor: var(--mcsimusic-text-color);
+$textErrorColor: var(--mcsimusic-error-text-color);
 
 html {
     --mcsimusic-primary-color: #f5b316;
     --mcsimusic-text-color: #e7e5e5;
     --mcsimusic-bg-color: #504d4d;
     --mcsimusic-border-color: #646363;
+    --mcsimusic-error-text-color: #d13353;
 
     font-family: 'Roboto', sans-serif;
     padding: 0;

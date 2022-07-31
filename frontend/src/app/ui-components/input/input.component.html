@@ -1,0 +1,10 @@
+<input 
+    #input
+    [ngClass]="{'bordered': bordered, error: errorMessage !== null}"
+    [(ngModel)]="value" 
+    [placeholder]="placeholder" 
+    (ngModelChange)="onChange($event)" 
+    (blur)="reset()"
+    (keyup)="onKeyUp($event)"
+ />
+<div class="error-message" [ngClass]="{ active: errorMessage !== null }" >{{errorMessage}}</div>

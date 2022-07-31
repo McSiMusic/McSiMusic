@@ -1,4 +1,5 @@
-<div class="tracks" *ngIf='!isLoading && (tracks$ | async) as tracks; else loading'>
+<app-search (onChange)="onFilterValueChanged($event)"></app-search>
+<div class="tracks" *ngIf='!isLoading && (tracks$ | async) as tracks;'>
     <div class="header-row row">
         <div *ngFor="let descriptor of tableDescriptor" class="header-cell cell {{descriptor.cellClass}}"
             [ngClass]="{ primary: descriptor.primary }">
@@ -13,10 +14,7 @@
     </div>
     <app-button (click)="loadNextPage()">Load More</app-button>
 </div>
+<app-preloader *ngIf='isLoading'></app-preloader>
 <div class="tracks-action-panel">
     <app-upload (onUpload)="onUpload($event)">Upload</app-upload>
 </div>
-
-<ng-template #loading>
-    <app-preloader></app-preloader>
-</ng-template>

@@ -1,0 +1,63 @@
+@import "src/styles";
+
+:host {
+    height: 36px;
+    display: flex;
+   
+    input {
+        width: 100%;
+        border: none;
+        background-color: $bgColor;
+        height: 36px;
+        box-sizing: border-box;
+        padding: 0;
+        color: $textColor;
+        font-size: 16px;
+        transition: height 0.2s;
+
+        &.error {
+            height: 20px;
+                
+            &.bordered {
+                &:hover {
+                    box-shadow: 0 0 1px $textErrorColor;
+                }
+
+                &:focus-visible, &:focus {
+                    box-shadow: 0 0 2px $textErrorColor;
+                }
+            }
+        }
+
+        &:focus-visible {
+            outline: none;
+        }
+
+        &.bordered {
+            border: 1px solid $borderColor;
+
+            &:hover {
+                box-shadow: 0 0 1px $primaryColor;
+            }
+
+            &:focus-visible, &:focus {
+                box-shadow: 0 0 2px $primaryColor;
+            }
+        }
+
+        
+    }
+
+    .error-message {
+        visibility: hidden;
+        color: $textErrorColor;
+        height: 0;
+        font-size: 12px;
+
+        &.active {
+            margin-top: 4px;
+            height: 12px;
+            visibility: visible;
+        }
+    }
+}

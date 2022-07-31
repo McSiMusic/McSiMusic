@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
+import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { PlayerComponent } from './pages/player/player.component';
@@ -19,6 +20,8 @@ import { ButtonComponent } from './ui-components/button/button.component';
 import { UploadComponent } from './ui-components/upload/upload.component';
 import { FoldersComponent } from './pages/browser/folders/folders.component';
 import { TracksComponent } from './pages/browser/tracks/tracks.component';
+import { InputComponent } from './ui-components/input/input.component';
+import { SearchComponent } from './ui-components/search/search.component';
 
 @NgModule({
   declarations: [
@@ -38,8 +41,10 @@ import { TracksComponent } from './pages/browser/tracks/tracks.component';
     UploadComponent,
     FoldersComponent,
     TracksComponent,
+    InputComponent,
+    SearchComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
+  imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],
   bootstrap: [AppComponent],
 })

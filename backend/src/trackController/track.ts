@@ -13,6 +13,7 @@ const conf = config().parsed;
 export const initTrackController = (express: Express) => {
   express.get("/tracks", async (req, res) => {
     const folder = req.query.folder;
+    const filter = req.query.filter || "";
     const offset = parseInt(req.query.offset?.toString() || "0");
     const size = parseInt(req.query.size?.toString() || "10");
     const sort = req.query.size?.toString() || "name";
@@ -21,11 +22,14 @@ export const initTrackController = (express: Express) => {
       return res.send(400);
     }
 
-    const result = await Track.find({ folder: folder })
+    const result = await Track.find({
+      folder: folder,
+      name: { $regex: filter, $options: "i" },
+    })
       .select({ track: 0 })
       .skip(offset)
       .limit(size)
-      //.sort(sort)
+      .sort(sort)
       .allowDiskUse(true)
       .exec();
 
