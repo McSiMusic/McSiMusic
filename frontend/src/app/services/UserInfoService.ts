@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, of, takeUntil, takeWhile } from 'rxjs';
+import { BehaviorSubject, of, takeUntil, takeWhile, tap } from 'rxjs';
 import { Track, User } from './types';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { SortOrder } from '../pages/browser/tracks/types';
+import { TRACK_PAGE_SIZE } from './consts';
 
 @Injectable({ providedIn: 'root' })
 export class UserInfoService {
   private _tracksUrl = `${environment.backUrl}/tracks`;
+  private _folderUrl = `${environment.backUrl}/folder`;
   currentFolder = new BehaviorSubject<string | null>(null);
 
   constructor(private _http: HttpClient) {}
@@ -25,10 +28,17 @@ export class UserInfoService {
     return this._userInfo?.folders;
   }
 
-  getTracks(folder: string, page: number, filter: string, size = 10) {
+  getTracks(
+    folder: string,
+    page: number,
+    filter: string,
+    sort: keyof Track,
+    order: SortOrder,
+    size = TRACK_PAGE_SIZE
+  ) {
     const offset = page * size;
     return this._http.get<Track[]>(this._tracksUrl, {
-      params: { folder, offset, size, filter },
+      params: { folder, offset, size, filter, order, sort },
       withCredentials: true,
     });
   }
@@ -44,4 +54,21 @@ export class UserInfoService {
       withCredentials: true,
     });
   }
+
+  addFolder = (folder: string) => {
+    return this._http
+      .post<string[]>(this._folderUrl, { folder }, { withCredentials: true })
+      .pipe(
+        tap((folders) => {
+          if (this._userInfo != null) this._userInfo.folders = folders;
+        })
+      );
+  };
+
+  deleteFolder = (folder: string) => {
+    return this._http.delete<string[]>(this._folderUrl, {
+      body: { folder },
+      withCredentials: true,
+    });
+  };
 }

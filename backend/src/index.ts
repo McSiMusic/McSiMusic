@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import { initAuthEndpoint } from "./auth/auth";
 import { initMongo } from "./mongo/init";
 import { initTrackController } from "./trackController/track";
-import { urlencoded } from "body-parser";
+import bodyParser, { urlencoded } from "body-parser";
 
 const conf = config().parsed;
 
@@ -13,9 +13,9 @@ const app = express();
 app.use(cors({ origin: conf?.FRONTEND, credentials: true }));
 app.use(cookieParser());
 app.use(urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
-  console.log("hi");
   res.send("Hello World!");
 });
 

@@ -17,13 +17,15 @@ import { Key } from 'ts-key-enum';
   styleUrls: ['./input.component.scss'],
 })
 export class InputComponent implements OnInit {
+  @Input() autoFocus = false;
   @Input() bordered = true;
   @Input() debounceTime = 0;
   @Input() validator: InputValidator = (value: string) => true;
   @Input() initialValue = '';
   @Input() placeholder = '';
   @Output() onValidatedChange = new EventEmitter<string>();
-  @ViewChild('input') input: ElementRef<HTMLInputElement> | null = null;
+  @Output() onBlur = new EventEmitter<string>();
+  @ViewChild('input') input?: ElementRef<HTMLInputElement>;
 
   private _onValidatedChange: (val: string) => void = () => {};
 
@@ -45,7 +47,12 @@ export class InputComponent implements OnInit {
     this.value = this.initialValue;
   }
 
-  reset = () => {
+  onInputBlur = () => {
+    this._reset();
+    this.onBlur.emit(this.validatedValue);
+  };
+
+  private _reset = () => {
     this.value = this.validatedValue;
     this._resetError();
   };
@@ -65,8 +72,9 @@ export class InputComponent implements OnInit {
 
   onKeyUp = (event: KeyboardEvent) => {
     if (event.key === Key.Enter || event.key === Key.Escape) {
-      this.reset();
+      this._reset();
       this.input?.nativeElement.blur();
+      this.onBlur.emit(this.validatedValue);
     }
   };
 

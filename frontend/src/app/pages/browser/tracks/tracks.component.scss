@@ -5,7 +5,7 @@
     flex-direction: column;    
     color: $textColor;    
 
-    .tracks {
+    .tracks-wrapper {
         font-weight: 400;            
         flex: 1;
         display: flex;
@@ -23,6 +23,29 @@
                 &:hover {
                     box-shadow: 0 0 2px $primaryColor;
                     box-sizing: content-box;
+                }
+            }
+
+            .header-cell {
+                display: flex;
+                cursor: pointer;
+
+                .header-cell-name {
+                    flex: 1;
+                }
+
+                ::ng-deep app-sort-icon {
+                    width: 12px;
+                    height: 19px;
+
+                    &.active * {
+                        fill: $primaryColor !important;
+                    }
+
+                    &.asc {
+                        transform: rotate(180deg);
+                        transform-origin: 50% 50%;
+                    }
                 }
             }
 
@@ -49,6 +72,11 @@
                     width: 100px;
                 }
             }
+        }
+
+        .page-loader {
+            align-self: center;
+            margin-top: 8px;
         }
     }
 

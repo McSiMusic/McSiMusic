@@ -16,6 +16,7 @@ const trackSchema = new Schema({
   userId: String,
   date: Number,
   track: Buffer,
+  folder: String,
 });
 
 export const User = mongoose.model("User", userSchema, "User");

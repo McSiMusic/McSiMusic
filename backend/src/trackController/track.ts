@@ -16,7 +16,8 @@ export const initTrackController = (express: Express) => {
     const filter = req.query.filter || "";
     const offset = parseInt(req.query.offset?.toString() || "0");
     const size = parseInt(req.query.size?.toString() || "10");
-    const sort = req.query.size?.toString() || "name";
+    const sort = req.query.sort?.toString() || "name";
+    const order = (req.query.order?.toString() || "asc") as "asc" | "desc";
 
     if (folder === undefined) {
       return res.send(400);
@@ -29,7 +30,7 @@ export const initTrackController = (express: Express) => {
       .select({ track: 0 })
       .skip(offset)
       .limit(size)
-      .sort(sort)
+      .sort({ [sort]: order })
       .allowDiskUse(true)
       .exec();
 
@@ -87,13 +88,29 @@ export const initTrackController = (express: Express) => {
       conf?.JWT_SECRET || "SECRET"
     ) as oauth2_v2.Schema$Userinfo;
 
-    const result = await User.findOneAndUpdate(
-      { id: userInfo.id },
-      (user: any) => ({
-        folders: [...user.folders, req.body.folder],
-      })
-    );
+    const user = await User.findOne({ id: userInfo.id });
+    if (user) {
+      user.folders = [...user.folders, req.body.folder];
+      res.send(await user.save());
+      return;
+    }
 
-    res.send(result);
+    res.sendStatus(404);
+  });
+
+  express.delete("/folder", async (req, res) => {
+    const userInfo = jwt.verify(
+      req.cookies[COOKIE_NAME],
+      conf?.JWT_SECRET || "SECRET"
+    ) as oauth2_v2.Schema$Userinfo;
+
+    const user = await User.findOne({ id: userInfo.id });
+    if (user) {
+      user.folders = user.folders.filter((f) => f !== req.body.folder);
+      await Track.deleteMany({ folder: req.body.folder });
+      return res.send(await user.save());
+    }
+
+    res.sendStatus(404);
   });
 };

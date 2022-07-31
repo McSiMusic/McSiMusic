@@ -35,6 +35,7 @@
 
         &.bordered {
             border: 1px solid $borderColor;
+            padding: 4px;
 
             &:hover {
                 box-shadow: 0 0 1px $primaryColor;

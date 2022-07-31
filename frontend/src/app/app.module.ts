@@ -22,6 +22,8 @@ import { FoldersComponent } from './pages/browser/folders/folders.component';
 import { TracksComponent } from './pages/browser/tracks/tracks.component';
 import { InputComponent } from './ui-components/input/input.component';
 import { SearchComponent } from './ui-components/search/search.component';
+import { SortIconComponent } from './pages/browser/tracks/sort-icon/sort-icon.component';
+import { AutofocusDirective } from './directives/autofocus.directive';
 
 @NgModule({
   declarations: [
@@ -43,6 +45,8 @@ import { SearchComponent } from './ui-components/search/search.component';
     TracksComponent,
     InputComponent,
     SearchComponent,
+    SortIconComponent,
+    AutofocusDirective,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],

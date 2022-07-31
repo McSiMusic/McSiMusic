@@ -1,18 +1,22 @@
 <app-search (onChange)="onFilterValueChanged($event)"></app-search>
-<div class="tracks" *ngIf='!isLoading && (tracks$ | async) as tracks;'>
-    <div class="header-row row">
-        <div *ngFor="let descriptor of tableDescriptor" class="header-cell cell {{descriptor.cellClass}}"
-            [ngClass]="{ primary: descriptor.primary }">
-            {{ descriptor.displayName }}
+<div class="tracks-wrapper">
+    <div class="tracks" *ngIf="!isLoading">
+        <div class="header-row row">
+            <div *ngFor="let descriptor of tableDescriptor" class="header-cell cell {{descriptor.cellClass}}"
+                [ngClass]="{ primary: descriptor.primary }" (click)="onSortClick(descriptor.key)">
+                <div class="header-cell-name">{{ descriptor.displayName }}</div>
+                <app-sort-icon [ngClass]="{ active: isActiveSort(descriptor.key), asc: isAsc() }" ></app-sort-icon>
+            </div>
+        </div>
+        <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row">
+            <div *ngFor="let descriptor of tableDescriptor" class="cell {{descriptor.cellClass}}"
+                [ngClass]="{ primary: descriptor.primary }">
+                {{ getConvertedValue(track[descriptor.key], descriptor) }}
+            </div>
         </div>
     </div>
-    <div *ngFor="let track of tracks; let i = index" class="row">
-        <div *ngFor="let descriptor of tableDescriptor" class="cell {{descriptor.cellClass}}"
-            [ngClass]="{ primary: descriptor.primary }">
-            {{ getConvertedValue(track[descriptor.key], descriptor) }}
-        </div>
-    </div>
-    <app-button (click)="loadNextPage()">Load More</app-button>
+    <div #pageLoadingAnchor id="page-loading-anchor"></div>
+    <app-preloader-logo *ngIf='!isLoading && isPageLoading' class="page-loader" [size]="20"></app-preloader-logo>
 </div>
 <app-preloader *ngIf='isLoading'></app-preloader>
 <div class="tracks-action-panel">

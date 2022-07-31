@@ -1,10 +1,12 @@
 <input 
     #input
+    tabindex="-1"
     [ngClass]="{'bordered': bordered, error: errorMessage !== null}"
     [(ngModel)]="value" 
     [placeholder]="placeholder" 
     (ngModelChange)="onChange($event)" 
-    (blur)="reset()"
+    (blur)="onInputBlur()"
     (keyup)="onKeyUp($event)"
+    [appAutofocus]="autoFocus"
  />
 <div class="error-message" [ngClass]="{ active: errorMessage !== null }" >{{errorMessage}}</div>
