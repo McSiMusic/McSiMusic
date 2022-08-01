@@ -81,36 +81,4 @@ export const initTrackController = (express: Express) => {
 
     res.send(result);
   });
-
-  express.post("/folder", async (req, res) => {
-    const userInfo = jwt.verify(
-      req.cookies[COOKIE_NAME],
-      conf?.JWT_SECRET || "SECRET"
-    ) as oauth2_v2.Schema$Userinfo;
-
-    const user = await User.findOne({ id: userInfo.id });
-    if (user) {
-      user.folders = [...user.folders, req.body.folder];
-      res.send(await user.save());
-      return;
-    }
-
-    res.sendStatus(404);
-  });
-
-  express.delete("/folder", async (req, res) => {
-    const userInfo = jwt.verify(
-      req.cookies[COOKIE_NAME],
-      conf?.JWT_SECRET || "SECRET"
-    ) as oauth2_v2.Schema$Userinfo;
-
-    const user = await User.findOne({ id: userInfo.id });
-    if (user) {
-      user.folders = user.folders.filter((f) => f !== req.body.folder);
-      await Track.deleteMany({ folder: req.body.folder });
-      return res.send(await user.save());
-    }
-
-    res.sendStatus(404);
-  });
 };

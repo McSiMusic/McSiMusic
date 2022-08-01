@@ -7,7 +7,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { InputValidator } from './types';
+import { BlurEvent, InputValidator } from './types';
 import { debounce } from 'lodash';
 import { Key } from 'ts-key-enum';
 
@@ -24,7 +24,7 @@ export class InputComponent implements OnInit {
   @Input() initialValue = '';
   @Input() placeholder = '';
   @Output() onValidatedChange = new EventEmitter<string>();
-  @Output() onBlur = new EventEmitter<string>();
+  @Output() onBlur = new EventEmitter<BlurEvent>();
   @ViewChild('input') input?: ElementRef<HTMLInputElement>;
 
   private _onValidatedChange: (val: string) => void = () => {};
@@ -45,16 +45,17 @@ export class InputComponent implements OnInit {
       : onValidatedValueChange;
 
     this.value = this.initialValue;
+    this.validatedValue = this.value;
   }
 
   onInputBlur = () => {
     this._reset();
-    this.onBlur.emit(this.validatedValue);
+    this.onBlur.emit({ value: this.validatedValue });
   };
 
   private _reset = () => {
-    this.value = this.validatedValue;
-    this._resetError();
+    //this.value = this.validatedValue;
+    //this._resetError();
   };
 
   onChange = (value: string) => {
@@ -74,7 +75,11 @@ export class InputComponent implements OnInit {
     if (event.key === Key.Enter || event.key === Key.Escape) {
       this._reset();
       this.input?.nativeElement.blur();
-      this.onBlur.emit(this.validatedValue);
+      this.onBlur.emit({
+        value: this.validatedValue,
+        isEsc: event.key === Key.Escape,
+        isEnter: event.key === Key.Enter,
+      });
     }
   };
 

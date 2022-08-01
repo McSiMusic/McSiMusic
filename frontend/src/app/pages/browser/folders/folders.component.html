@@ -1,16 +1,34 @@
 <app-preloader *ngIf="foldersLoading"></app-preloader>
 <div class="folders-header" *ngIf="!foldersLoading">
     <div class="folders-caption">Folders</div>
-    <div class="folders-add" (click)="createFolder()"></div>
+    <div class="folders-add control-icon" (click)="createFolder()"></div>
 </div>
 <div class="folders">
-    <div class="folder" *ngFor="let folder of folders" [ngClass]="{ active: isCurrentFolder(folder.name) }">
-        <ng-container [ngSwitch]="isEditing(folder)">
-            <div *ngSwitchCase="false" class="folder-caption">{{ folder.name }}</div>
-            <app-input *ngSwitchCase="true" class="folder-input" [initialValue]="folder.name" [autoFocus]="true"
-                (onBlur)="onEditCompleted($event)"></app-input>
-        </ng-container>
+    <div class="folder" *ngFor="let folder of folders"
+        [ngClass]="{ active: isCurrentFolder(folder), idle: isIdle(folder) }" (click)="onFolderClick(folder)">
+        <ng-container [ngSwitch]="folder.status">
+            <ng-container *ngSwitchCase="'Idle'">
+                <div class="folder-caption">{{ folder.name }}</div>
+                <app-delete-icon *ngIf="isDeleteEnabled()" class="folder-delete control-icon"
+                    (click)="deleteFolder(folder)" click-stop-propagation></app-delete-icon>
+                <app-edit-icon class="folder-delete control-icon" (click)="startEditFolder(folder)"
+                    click-stop-propagation></app-edit-icon>
+            </ng-container>
 
-        <div class="folder-delete" (click)="deleteFolder(folder)"></div>
+            <ng-container *ngSwitchCase="'Loading'">
+                <div class="folder-caption">{{ folder.name }}</div>
+                <div class="folder-overflow"></div>
+            </ng-container>
+
+            <ng-container *ngSwitchDefault>
+                <app-input class="folder-input" [initialValue]="folder.name" [autoFocus]="true"
+                    (onBlur)="onBlur($event, folder)" [validator]="validate">
+                </app-input>
+                <app-delete-icon class="folder-cancel control-icon" (click)="cancelEditFolder(folder)"
+                    click-stop-propagation></app-delete-icon>
+                <app-apply-icon class="folder-apply control-icon" (click)="applyEditFolder(folder)"
+                    click-stop-propagation></app-apply-icon>
+            </ng-container>
+        </ng-container>
     </div>
 </div>

@@ -4,6 +4,8 @@ export interface Folder {
 }
 
 export enum FolderStatus {
-  Idle,
-  Editing,
+  Idle = 'Idle',
+  Creating = 'Creating',
+  Editing = 'Editing',
+  Loading = 'Loading',
 }

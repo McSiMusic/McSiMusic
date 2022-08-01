@@ -66,9 +66,29 @@ export class UserInfoService {
   };
 
   deleteFolder = (folder: string) => {
-    return this._http.delete<string[]>(this._folderUrl, {
-      body: { folder },
-      withCredentials: true,
-    });
+    return this._http
+      .delete<string[]>(this._folderUrl, {
+        body: { folder },
+        withCredentials: true,
+      })
+      .pipe(
+        tap((folders) => {
+          if (this._userInfo != null) this._userInfo.folders = folders;
+        })
+      );
+  };
+
+  patchFolder = (folder: string, oldFolder: string) => {
+    return this._http
+      .patch<string[]>(
+        this._folderUrl,
+        { body: { folder, oldFolder } },
+        { withCredentials: true }
+      )
+      .pipe(
+        tap((folders) => {
+          if (this._userInfo != null) this._userInfo.folders = folders;
+        })
+      );
   };
 }
