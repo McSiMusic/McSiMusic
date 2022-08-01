@@ -19,10 +19,23 @@
 
             &:not(.header-row) {
                 cursor: pointer;
+                position: relative;
 
                 &:hover {
                     box-shadow: 0 0 2px $primaryColor;
                     box-sizing: content-box;
+                }
+
+                &.selected:after {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: $primaryColor;
+                    opacity: 0.1;
+                    pointer-events: none;
                 }
             }
 
@@ -71,13 +84,19 @@
                 &.duration {
                     width: 100px;
                 }
+
+                &.action-row {
+                    width: 70px;
+                    display: flex;
+                    justify-content: space-around;
+                }
             }
         }
 
         .page-loader {
             align-self: center;
             margin-top: 8px;
-        }
+        }        
     }
 
     app-input {
@@ -92,5 +111,25 @@
         justify-content: end;
         padding: 12px 24px;
         box-sizing: border-box;
+
+        * {
+            margin-left: 8px;
+        }
+    }
+
+    .control-icon {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        display: flex;
+
+        ::ng-deep svg * {
+            fill: $textColor !important;
+            stroke: $textColor !important;
+        }
+
+        &:hover {
+            transform: scale(1.1);
+        }
     }
 }

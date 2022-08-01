@@ -37,13 +37,15 @@ export const initTrackController = (express: Express) => {
     res.send(result);
   });
 
-  express.get("/track/id", async (req, res) => {
-    const userInfo = jwt.verify(
+  express.get("/track", async (req, res) => {
+    jwt.verify(
       req.cookies[COOKIE_NAME],
       conf?.JWT_SECRET || "SECRET"
     ) as oauth2_v2.Schema$Userinfo;
 
-    const track = await Track.findOne({ id: userInfo.id });
+    const trackId = req.query.trackId;
+    const track = await Track.findById(trackId);
+
     res.send(track?.track);
   });
 
@@ -80,5 +82,17 @@ export const initTrackController = (express: Express) => {
     }
 
     res.send(result);
+  });
+
+  express.delete("/track", async (req, res) => {
+    jwt.verify(
+      req.cookies[COOKIE_NAME],
+      conf?.JWT_SECRET || "SECRET"
+    ) as oauth2_v2.Schema$Userinfo;
+
+    const trackId = req.query.trackId;
+    await Track.findById(trackId).remove();
+
+    res.send();
   });
 };

@@ -23,6 +23,7 @@ import { takeWhile, Observable } from 'rxjs';
 import { Track } from 'src/app/services/types';
 import { SortOrder } from './types';
 import { TRACK_PAGE_SIZE } from 'src/app/services/consts';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-tracks',
@@ -101,6 +102,8 @@ export class TracksComponent implements AfterViewInit, OnInit {
   isLoading = true;
   isPageLoading = false;
   tracks$?: Observable<Track[]>;
+  preloaderProgress = '';
+  currentTrack?: Track;
 
   private get _currentFolder() {
     return this._userInfoService.currentFolder;
@@ -114,9 +117,21 @@ export class TracksComponent implements AfterViewInit, OnInit {
     this.isLoading = true;
     this._userInfoService
       .upload(files, this._currentFolder.value!)
-      .subscribe((tracks) => {
-        this._currentFolder.next(this._currentFolder.value);
-        this.isLoading = false;
+      .subscribe((event: HttpEvent<Track[]>) => {
+        console.log(event);
+        if (event.type === HttpEventType.UploadProgress) {
+          this.preloaderProgress = `Uploading ${Math.round(
+            (event.loaded / event.total!) * 100
+          )} %`;
+
+          if (event.loaded === event.total) {
+            this.preloaderProgress = 'Processing...';
+          }
+        } else if (event.type === HttpEventType.Response) {
+          this._currentFolder.next(this._currentFolder.value);
+          this.preloaderProgress = '';
+          this.isLoading = false;
+        }
       });
   };
 
@@ -145,5 +160,31 @@ export class TracksComponent implements AfterViewInit, OnInit {
 
   trackBy = (i: number, track: Track) => {
     return track._id;
+  };
+
+  deleteTrack = (track?: Track) => {
+    const targetTrack = track || this.currentTrack;
+    if (targetTrack === undefined) return;
+
+    this._userInfoService.deleteTrack(targetTrack).subscribe(() => {
+      this._currentFolder.next(this._currentFolder.value);
+      if (this.isTrackSelected(track)) {
+        this.selectTrack();
+      }
+    });
+  };
+
+  downloadTrack = (track?: Track) => {
+    const targetTrack = track || this.currentTrack;
+    if (targetTrack === undefined) return;
+    this._userInfoService.downloadTrack(targetTrack);
+  };
+
+  selectTrack = (track?: Track) => {
+    this.currentTrack = this.isTrackSelected(track) ? undefined : track;
+  };
+
+  isTrackSelected = (track?: Track) => {
+    return this.currentTrack?._id === track?._id;
   };
 }

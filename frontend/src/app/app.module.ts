@@ -22,12 +22,13 @@ import { FoldersComponent } from './pages/browser/folders/folders.component';
 import { TracksComponent } from './pages/browser/tracks/tracks.component';
 import { InputComponent } from './ui-components/input/input.component';
 import { SearchComponent } from './ui-components/search/search.component';
-import { SortIconComponent } from './pages/browser/tracks/sort-icon/sort-icon.component';
+import { SortIconComponent } from './icons/sort-icon/sort-icon.component';
 import { AutofocusDirective } from './directives/autofocus.directive';
-import { DeleteIconComponent } from './pages/browser/folders/delete-icon/delete-icon.component';
-import { EditIconComponent } from './pages/browser/folders/edit-icon/edit-icon.component';
-import { ApplyIconComponent } from './pages/browser/folders/apply-icon/apply-icon.component';
+import { ApplyIconComponent } from './icons/apply-icon/apply-icon.component';
 import { ClickStopPropagationDirective } from './directives/click-stop-propagation.directive';
+import { EditIconComponent } from './icons/edit-icon/edit-icon.component';
+import { DeleteIconComponent } from './icons/delete-icon/delete-icon.component';
+import { DownloadButtonComponent } from './icons/download-icon/download-icon.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { ClickStopPropagationDirective } from './directives/click-stop-propagati
     DeleteIconComponent,
     ApplyIconComponent,
     ClickStopPropagationDirective,
+    DownloadButtonComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],

@@ -1,6 +1,6 @@
 @import "src/styles";
 
-:host {
+.button {
     display: flex;
     min-width: 16px;
     min-height: 8px;
@@ -13,5 +13,10 @@
 
     &:active, &:focus, &:hover {
         color: $primaryColor;
+    }
+
+    &.disabled {
+        color: $borderColor;
+        pointer-events: none;
     }
 }

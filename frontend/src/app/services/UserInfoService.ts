@@ -5,11 +5,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { SortOrder } from '../pages/browser/tracks/types';
 import { TRACK_PAGE_SIZE } from './consts';
+import { downloadBlob, downloadURI } from '../utils/download';
 
 @Injectable({ providedIn: 'root' })
 export class UserInfoService {
   private _tracksUrl = `${environment.backUrl}/tracks`;
   private _folderUrl = `${environment.backUrl}/folder`;
+  private _trackUrl = `${environment.backUrl}/track`;
   currentFolder = new BehaviorSubject<string | null>(null);
 
   constructor(private _http: HttpClient) {}
@@ -52,6 +54,8 @@ export class UserInfoService {
     return this._http.post<Track[]>(this._tracksUrl, formData, {
       params: { folder },
       withCredentials: true,
+      reportProgress: true,
+      observe: 'events',
     });
   }
 
@@ -90,5 +94,25 @@ export class UserInfoService {
           if (this._userInfo != null) this._userInfo.folders = folders;
         })
       );
+  };
+
+  downloadTrack = (track: Track) => {
+    this._http
+      .get(this._trackUrl, {
+        withCredentials: true,
+        params: { trackId: track._id },
+        observe: 'response',
+        responseType: 'blob',
+      })
+      .subscribe((res) => {
+        downloadBlob(res.body!, `${track.name}.mp3`);
+      });
+  };
+
+  deleteTrack = (track: Track) => {
+    return this._http.delete(this._trackUrl, {
+      withCredentials: true,
+      params: { trackId: track._id },
+    });
   };
 }

@@ -1,24 +1,33 @@
 <app-search (onChange)="onFilterValueChanged($event)"></app-search>
 <div class="tracks-wrapper">
-    <div class="tracks" *ngIf="!isLoading">
+    <div class="tracks" *ngIf="!isLoading" (click)="selectTrack()">
         <div class="header-row row">
             <div *ngFor="let descriptor of tableDescriptor" class="header-cell cell {{descriptor.cellClass}}"
                 [ngClass]="{ primary: descriptor.primary }" (click)="onSortClick(descriptor.key)">
                 <div class="header-cell-name">{{ descriptor.displayName }}</div>
-                <app-sort-icon [ngClass]="{ active: isActiveSort(descriptor.key), asc: isAsc() }" ></app-sort-icon>
+                <app-sort-icon [ngClass]="{ active: isActiveSort(descriptor.key), asc: isAsc() }"></app-sort-icon>
             </div>
+            <div class="header-cell cell action-row">Actions</div>
         </div>
-        <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row">
+        <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row"
+            (click)="selectTrack(track)" [ngClass]="{ selected: isTrackSelected(track) }" click-stop-propagation>
             <div *ngFor="let descriptor of tableDescriptor" class="cell {{descriptor.cellClass}}"
                 [ngClass]="{ primary: descriptor.primary }">
                 {{ getConvertedValue(track[descriptor.key], descriptor) }}
+            </div>
+
+            <div class="cell action-row" click-stop-propagation>
+                <app-download-icon class="control-icon" (click)="downloadTrack(track)"></app-download-icon>
+                <app-delete-icon class="control-icon" (click)="deleteTrack(track)"></app-delete-icon>
             </div>
         </div>
     </div>
     <div #pageLoadingAnchor id="page-loading-anchor"></div>
     <app-preloader-logo *ngIf='!isLoading && isPageLoading' class="page-loader" [size]="20"></app-preloader-logo>
 </div>
-<app-preloader *ngIf='isLoading'></app-preloader>
+<app-preloader *ngIf='isLoading' [caption]="preloaderProgress"></app-preloader>
 <div class="tracks-action-panel">
+    <app-button (click)="downloadTrack()" [disabled]="currentTrack === undefined">Download</app-button>
+    <app-button (click)="deleteTrack()" [disabled]="currentTrack === undefined">Delete</app-button>
     <app-upload (onUpload)="onUpload($event)">Upload</app-upload>
 </div>
