@@ -56,6 +56,7 @@ export class UserInfoService {
       withCredentials: true,
       reportProgress: true,
       observe: 'events',
+      headers: { 'Content-Transfer-Encoding': 'utf-8' },
     });
   }
 

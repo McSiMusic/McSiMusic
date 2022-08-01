@@ -68,11 +68,16 @@ export const initTrackController = (express: Express) => {
       const file = files[i];
       const audioMeta = await parseBuffer(file.buffer);
 
+      const name = Buffer.from(
+        audioMeta.common.title || path.basename(file.originalname),
+        "latin1"
+      ).toString("utf8");
+
       result.push(
         await new Track({
           duration: audioMeta.format.duration,
           id: new mongoose.Types.ObjectId(),
-          name: audioMeta.common.title || path.basename(file.originalname),
+          name,
           track: file.buffer,
           userId: userInfo.id!,
           date: new Date(),

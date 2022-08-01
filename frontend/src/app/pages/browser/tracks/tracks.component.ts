@@ -57,16 +57,14 @@ export class TracksComponent implements AfterViewInit, OnInit {
         this._page.complete();
         this._page = new BehaviorSubject(0);
         this.isLoading = true;
-        console.log('Turn on main loader');
+        this.selectTrack();
       }),
       switchMap(([folder, filter, sort, order]) =>
         this._page.pipe(
           tap(() => {
             this.isPageLoading = true;
-            console.log('Turn on page loader');
           }),
           concatMap((page) => {
-            console.log(`Get page ${page}`);
             return this._userInfoService.getTracks(
               folder!,
               page,
@@ -78,7 +76,6 @@ export class TracksComponent implements AfterViewInit, OnInit {
           takeWhile((tracks) => tracks.length === TRACK_PAGE_SIZE, true),
           scan((acc, tracks) => [...acc, ...tracks]),
           finalize(() => {
-            console.log(`Finalize paging`);
             this.isPageLoading = false;
           })
         )
@@ -87,7 +84,6 @@ export class TracksComponent implements AfterViewInit, OnInit {
     );
 
     this.tracks$.subscribe((tracks) => {
-      console.log(`Turn off main loader`);
       this.isLoading = false;
     });
   }
@@ -118,7 +114,6 @@ export class TracksComponent implements AfterViewInit, OnInit {
     this._userInfoService
       .upload(files, this._currentFolder.value!)
       .subscribe((event: HttpEvent<Track[]>) => {
-        console.log(event);
         if (event.type === HttpEventType.UploadProgress) {
           this.preloaderProgress = `Uploading ${Math.round(
             (event.loaded / event.total!) * 100
