@@ -15,6 +15,7 @@ export class MenuComponent implements OnInit {
   ) {}
   @Input() elements: MenuItem[] = [];
   @Input() selectedIndex?: number;
+  menuContentElement?: MenuContentComponent;
 
   private _visible = false;
   get visible() {
@@ -26,13 +27,20 @@ export class MenuComponent implements OnInit {
     this._visible = value;
     if (value) {
       this._portalService.add(MenuContentComponent, (c) => {
-        c.instance.elements = this.elements;
-        c.instance.hostElement = this._elementRef;
+        this.menuContentElement = c.instance;
+        this.menuContentElement.elements = this.elements;
+        this.menuContentElement.hostElement = this._elementRef;
+        this.menuContentElement.onOutsideClick.subscribe(this.onClickOutside);
       });
     } else {
+      this.menuContentElement?.onOutsideClick.unsubscribe();
       this._portalService.clear();
     }
   }
+
+  onClickOutside = () => {
+    this.visible = false;
+  };
 
   toggleVisible() {
     this.visible = !this.visible;

@@ -33,9 +33,9 @@ export class UserInfoService {
   getTracks(
     folder: string,
     page: number,
-    filter: string,
-    sort: keyof Track,
-    order: SortOrder,
+    filter: string = '',
+    sort: keyof Track = 'date',
+    order: SortOrder = SortOrder.Desc,
     size = TRACK_PAGE_SIZE
   ) {
     const offset = page * size;

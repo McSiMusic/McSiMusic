@@ -17,9 +17,11 @@ import { MenuComponent } from '../menu/menu.component';
 })
 export class DropdownComponent implements OnInit {
   @Input() items: DropdownItem[] = [];
-  @Input() initalSelectedIndex?: number;
+  @Input() selectedIndex?: number;
   @Input() placeholder = 'Choose value';
+  @Input() bordered = true;
   @Output() onChange = new EventEmitter<string>();
+
   menuItems: MenuItem[] = [];
   visible = false;
 
@@ -28,13 +30,15 @@ export class DropdownComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.menuItems = this.items.map((i) => ({
-      action: () => this.onMenuItemClick(i),
-      name: i.name,
+    this.menuItems = this.items.map((item, i) => ({
+      action: () => this.onMenuItemClick(item, i),
+      name: item.name,
     }));
   }
 
-  onMenuItemClick = (item: DropdownItem) => {
+  onMenuItemClick = (item: DropdownItem, index: number) => {
+    this.selectedIndex = index;
+    this.menuComponent?.toggleVisible();
     this.onChange.emit(item.value);
   };
 
@@ -43,8 +47,8 @@ export class DropdownComponent implements OnInit {
   };
 
   get selectedValue() {
-    return this.initalSelectedIndex
-      ? this.menuComponent?.elements[this.initalSelectedIndex]?.name ||
+    return this.selectedIndex !== undefined
+      ? this.menuComponent?.elements[this.selectedIndex]?.name ||
           this.placeholder
       : this.placeholder;
   }

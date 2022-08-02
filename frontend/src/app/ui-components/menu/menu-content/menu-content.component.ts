@@ -3,12 +3,15 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  HostListener,
   Input,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { MenuItem } from '../types';
 import { dropdownTopMargin } from './consts';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-menu-content',
@@ -20,6 +23,18 @@ export class MenuContentComponent implements OnInit, AfterViewChecked {
   @Input() hostElement: ElementRef<HTMLElement> | null = null;
   @Input() selectedIndex?: number;
   @ViewChild('content') content: ElementRef<HTMLElement> | null = null;
+  @Output() onOutsideClick = new EventEmitter();
+
+  @HostListener('document:click', ['$event.target'])
+  onPublicClick = (targetElement: HTMLElement) => {
+    const clickedInside =
+      this.content?.nativeElement.contains(targetElement) ||
+      this.hostElement?.nativeElement.contains(targetElement);
+
+    if (!clickedInside) {
+      this.onOutsideClick.emit();
+    }
+  };
 
   constructor(private _cdRef: ChangeDetectorRef) {}
 

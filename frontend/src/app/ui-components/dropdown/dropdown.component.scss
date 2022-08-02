@@ -1,0 +1,23 @@
+@import "src/styles";
+
+:host {
+    .dropdown-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        app-dropdown-icon {
+            margin-left: 8px;
+            width: 12px;
+            height: 12px;
+
+            ::ng-deep svg g {
+                fill: $textColor;
+            }
+        }
+
+        &:hover app-dropdown-icon ::ng-deep svg g {
+            fill: $primaryColor;
+        }
+    }
+}

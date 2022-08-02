@@ -1,5 +1,5 @@
 import { Track } from 'src/app/services/types';
-import { sToTime } from './helpers';
+import { sToTime } from 'src/app/utils/durtaionConvertor';
 
 export interface TrackPropDescriptor {
   key: keyof Track;

@@ -1,5 +1,24 @@
 <div class="header">
-    <app-dropdown [items]="folderDropdownItems" [initalSelectedIndex]="0"></app-dropdown>
+    <app-dropdown [items]="folderDropdownItems" [selectedIndex]="0" [bordered]="false"
+        (onChange)="onFolderChange($event)"></app-dropdown>
 </div>
-<div class="list"></div>
+<div class="list">
+    <div class="tracks-wrapper">
+        <div class="tracks" *ngIf='!isLoading'>
+            <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row">
+                <div class="controls cell">
+                    <app-play-icon></app-play-icon>
+                </div>
+                <div class="number cell">{{i}}</div>
+                <div class="name cell">{{track.name}}</div>
+                <div class="duration cell">{{convertDuration(track.duration)}}</div>
+            </div>
+        </div>
+
+        <div #pageLoadingAnchor id="page-loading-anchor"></div>
+        <app-preloader-logo *ngIf='!isLoading && isPageLoading' class="page-loader" [size]="20"></app-preloader-logo>
+    </div>
+
+    <app-preloader *ngIf='isLoading'></app-preloader>
+</div>
 <div class="control"></div>

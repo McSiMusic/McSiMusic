@@ -1,6 +1,11 @@
 @import "src/styles";
 
 :host {
+    height: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
     .header {
         height: 96px;
         display: flex;
@@ -10,14 +15,93 @@
 
         app-dropdown {
             width: auto;
+            font-size: 36px;
+
+            ::ng-deep app-dropdown-icon {
+                width: 24px;
+                height: 24px;
+            }
         }
     }
 
     .list {
         flex: 1;
+        overflow: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+
+        .tracks-wrapper {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .tracks {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+
+                .row {
+                    font-size: 20px;
+                    padding: 8px 36px;
+                    color: $textColor;
+                    display: flex;
+                    flex-direction: row;
+                    height: 36px;
+                    border-bottom: solid 1px $borderColor;
+                    cursor: pointer;
+
+                    &:hover {
+                        .cell.controls app-play-icon ::ng-deep * {
+                            fill: $primaryColor;
+                        }
+
+                        color: $primaryColor;
+                    }
+
+                    .cell {
+                        display: flex;
+                        align-items: center;
+                        padding: 8px;
+
+                        &.controls {
+                            app-play-icon {
+                                width: 24px;
+                                height: 24px;
+                                
+
+                                ::ng-deep * {
+                                    fill: $textColor;
+                                }
+                            }
+                        }
+
+                        &.name {
+                            flex: 1;
+                        }
+                    }
+                }
+            }
+
+            .page-loader {
+                margin: 8px;
+                display: flex;
+            }
+        }
+
+        app-preloader {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
     }
 
     .control {
+        border-top: 1px solid $borderColor;
         height: 96px;
     }
 }
