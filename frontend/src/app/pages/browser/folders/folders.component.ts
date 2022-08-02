@@ -26,7 +26,9 @@ export class FoldersComponent {
   }
 
   isCurrentFolder = (folder: Folder) => {
-    return this._currentFolder === folder.name;
+    return (
+      this._currentFolder === folder.name && folder.status === FolderStatus.Idle
+    );
   };
 
   createFolder = () => {
@@ -139,13 +141,21 @@ export class FoldersComponent {
   };
 
   onFolderClick = (folder: Folder) => {
-    this._userInfoService.currentFolder.next(folder.name);
+    if (folder.status === FolderStatus.Idle) {
+      this._userInfoService.currentFolder.next(folder.name);
+      this.folders = this.folders.filter(
+        (f) => f.status !== FolderStatus.Creating
+      );
+      this.folders.forEach((f) => {
+        if (f.status === FolderStatus.Editing) f.status = FolderStatus.Idle;
+      });
+    }
   };
 
   isIdle = (folder: Folder) => folder.status === FolderStatus.Idle;
 
   private _isInputValueValid = () => {
     if (this.input === undefined) return true;
-    return this.input.validatedValue === this.input.value;
+    return this.input.errorMessage === null;
   };
 }

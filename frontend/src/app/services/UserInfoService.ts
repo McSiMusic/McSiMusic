@@ -45,7 +45,7 @@ export class UserInfoService {
     });
   }
 
-  upload(files: FileList, folder: string) {
+  upload(files: FileList | File[], folder: string) {
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
       formData.append('files', files[i], files[i].name);

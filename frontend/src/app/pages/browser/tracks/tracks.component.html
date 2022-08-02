@@ -1,6 +1,6 @@
-<app-search (onChange)="onFilterValueChanged($event)"></app-search>
-<div class="tracks-wrapper">
-    <div class="tracks" *ngIf="!isLoading" (click)="selectTrack()">
+<app-search *ngIf="!isEmpty" (onChange)="onFilterValueChanged($event)"></app-search>
+<div class="tracks-wrapper" (dragenter)="onMainDragEnter()" (dragover)="onMainDragOver($event)" (drop)="onMainDrop($event)">
+    <div class="tracks" *ngIf="!isLoading && !isEmpty" (click)="selectTrack()">
         <div class="header-row row">
             <div *ngFor="let descriptor of tableDescriptor" class="header-cell cell {{descriptor.cellClass}}"
                 [ngClass]="{ primary: descriptor.primary }" (click)="onSortClick(descriptor.key)">
@@ -22,6 +22,15 @@
             </div>
         </div>
     </div>
+
+    <app-upload [isDnd]="true" (onEnter)="onDndEnter()" (onLeave)="onDndLeave()" (onUpload)="onUpload($event)"
+        [ngClass]="{ visible: isEmpty, hover: dndState === 'Hover' }">
+        <div class="dnd-area" [ngClass]="{ hover: dndState === 'Hover' }">
+            <div *ngIf="isEmpty" class="dnd-label">Click or drag to upload</div>
+            <div *ngIf="isEmpty" class="dnd-ext">Only mp3 files are allowed</div>
+        </div>
+    </app-upload>
+
     <div #pageLoadingAnchor id="page-loading-anchor"></div>
     <app-preloader-logo *ngIf='!isLoading && isPageLoading' class="page-loader" [size]="20"></app-preloader-logo>
 </div>

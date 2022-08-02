@@ -2,15 +2,22 @@
 
 :host {
     display: flex;
-    flex-direction: column;    
-    color: $textColor;    
+    flex-direction: column;
+    color: $textColor;
 
     .tracks-wrapper {
-        font-weight: 400;            
+        font-weight: 400;
         flex: 1;
         display: flex;
         flex-direction: column;
+        align-items: center;
         overflow: auto;
+        position: relative;
+
+        .tracks {
+            width: 100%;
+            flex: 1;
+        }
 
         .row {
             display: flex;
@@ -52,7 +59,7 @@
                     height: 19px;
 
                     &.active * {
-                        fill: $primaryColor !important;
+                        fill: $primaryColor  !important;
                     }
 
                     &.asc {
@@ -62,7 +69,7 @@
                 }
             }
 
-            
+
             .cell {
                 border-left: 1px solid $borderColor;
                 padding: 12px 16px;
@@ -94,9 +101,81 @@
         }
 
         .page-loader {
-            align-self: center;
             margin-top: 8px;
-        }        
+        }
+
+
+        app-upload {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            pointer-events: none;
+            display: none;
+
+            &.hover {
+                pointer-events: all;
+                display: flex;
+            }
+
+            &:not(.visible).hover {
+                background-color: $primaryColor;
+                opacity: 0.1;
+            }
+
+            .dnd-area {
+                width: 100%;
+                height: 100%;
+            }
+
+            &.visible {
+                top: 10%;
+                left: 10%;
+                width: 80%;
+                height: 80%;
+                display: flex;
+                pointer-events: all;
+
+                .dnd-area {
+                    border: 4px dashed $primaryColor;
+                    border-radius: 2px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    position: relative;
+    
+                    .dnd-label {
+                        font-size: 24px;
+                        color: $primaryColor;
+                    }
+    
+                    .dnd-ext {
+                        margin-top: 16px;
+                        color: $textColor;
+                    }
+    
+                    &:hover:after, &.hover:after {
+                        opacity: 0.05;
+                    }
+    
+                    &:active:after {
+                        opacity: 0.1;
+                    }
+    
+                    &:after {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        content: "";
+                        width: 100%;
+                        height: 100%;
+                        background-color: $primaryColor;
+                        opacity: 0;
+                        z-index: 2;
+                    }
+                }
+            }
+        }
     }
 
     app-input {
@@ -124,8 +203,8 @@
         display: flex;
 
         ::ng-deep svg * {
-            fill: $textColor !important;
-            stroke: $textColor !important;
+            fill: $textColor  !important;
+            stroke: $textColor  !important;
         }
 
         &:hover {

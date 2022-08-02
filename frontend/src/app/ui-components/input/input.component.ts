@@ -46,6 +46,7 @@ export class InputComponent implements OnInit {
 
     this.value = this.initialValue;
     this.validatedValue = this.value;
+    this._validate();
   }
 
   onInputBlur = () => {
@@ -58,17 +59,22 @@ export class InputComponent implements OnInit {
     //this._resetError();
   };
 
-  onChange = (value: string) => {
-    const validateResult = this.validator(value);
+  private _validate = () => {
+    const validateResult = this.validator(this.value);
     if (validateResult === true) {
-      this.validatedValue = value;
-      this._onValidatedChange(value);
+      this.validatedValue = this.value;
       this._resetError();
     } else {
       if (typeof validateResult === 'string') {
         this.errorMessage = validateResult;
       }
     }
+
+    return this.errorMessage === null;
+  };
+
+  onChange = (value: string) => {
+    if (this._validate()) this._onValidatedChange(value);
   };
 
   onKeyUp = (event: KeyboardEvent) => {

@@ -21,7 +21,7 @@ import { tableDescriptor, TrackPropDescriptor } from './consts';
 import { IntersectionService } from 'src/app/services/IntersectionService';
 import { takeWhile, Observable } from 'rxjs';
 import { Track } from 'src/app/services/types';
-import { SortOrder } from './types';
+import { SortOrder, DndState } from './types';
 import { TRACK_PAGE_SIZE } from 'src/app/services/consts';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 
@@ -85,6 +85,7 @@ export class TracksComponent implements AfterViewInit, OnInit {
 
     this.tracks$.subscribe((tracks) => {
       this.isLoading = false;
+      this.isEmpty = tracks.length === 0;
     });
   }
 
@@ -100,6 +101,8 @@ export class TracksComponent implements AfterViewInit, OnInit {
   tracks$?: Observable<Track[]>;
   preloaderProgress = '';
   currentTrack?: Track;
+  isEmpty = false;
+  dndState: DndState = DndState.Idle;
 
   private get _currentFolder() {
     return this._userInfoService.currentFolder;
@@ -109,8 +112,10 @@ export class TracksComponent implements AfterViewInit, OnInit {
     return descriptor.convert ? descriptor.convert(value) : value;
   };
 
-  onUpload = (files: FileList) => {
+  onUpload = (files: FileList | File[]) => {
     this.isLoading = true;
+    this.dndState = DndState.Idle;
+
     this._userInfoService
       .upload(files, this._currentFolder.value!)
       .subscribe((event: HttpEvent<Track[]>) => {
@@ -126,6 +131,7 @@ export class TracksComponent implements AfterViewInit, OnInit {
           this._currentFolder.next(this._currentFolder.value);
           this.preloaderProgress = '';
           this.isLoading = false;
+          this.isEmpty = false;
         }
       });
   };
@@ -182,4 +188,21 @@ export class TracksComponent implements AfterViewInit, OnInit {
   isTrackSelected = (track?: Track) => {
     return this.currentTrack?._id === track?._id;
   };
+
+  onDndLeave = () => {
+    this.dndState = DndState.Idle;
+  };
+
+  onDndEnter = () => {
+    this.dndState = DndState.Hover;
+  };
+
+  onMainDragEnter = () => {
+    if (!this.isEmpty) {
+      this.dndState = DndState.Hover;
+    }
+  };
+
+  onMainDragOver = (event: DragEvent) => event.preventDefault();
+  onMainDrop = (event: DragEvent) => event.preventDefault();
 }

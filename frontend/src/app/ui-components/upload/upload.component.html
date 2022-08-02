@@ -1,11 +1,12 @@
-<app-button (click)="uploader.click()">
-    <ng-content></ng-content>
+<app-button (click)="uploader.click()" *ngIf="!isDnd">
+    <ng-content *ngTemplateOutlet="content"></ng-content>
 </app-button>
-<input 
-    hidden 
-    type="file" 
-    #uploader
-    (change)="uploadFile($event)"
-    multiple="true"
-    accept=".mp3,audio/*"  
-/>
+<div *ngIf="isDnd" (click)="uploader.click()" class="click-area" (dragover)="onDragOver($event)"
+    (drop)="onDragEnd($event)" (dragleave)="onDragLeave($event)" (dragenter)="onDragEnter($event)">
+    <ng-content *ngTemplateOutlet="content"></ng-content>
+</div>
+<input hidden type="file" #uploader (change)="uploadFile($event)" multiple="true" accept=".mp3,audio/*" />
+
+<ng-template #content>
+    <ng-content></ng-content>
+</ng-template>
