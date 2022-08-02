@@ -23,6 +23,8 @@ import { Track } from 'src/app/services/types';
 import { Observable } from 'rxjs';
 import { sToTime } from '../../utils/durtaionConvertor';
 import { IntersectionService } from 'src/app/services/IntersectionService';
+import { Howl } from 'howler';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-player',
@@ -106,4 +108,40 @@ export class PlayerComponent implements OnInit, AfterViewInit {
   loadNextPage() {
     this._page.next(this._page.value + 1);
   }
+
+  onTrackClick = (track: Track) => {
+    var sound = new Howl({
+      src: `${environment.backUrl}/track?trackId=${track._id}`,
+      xhr: { withCredentials: true },
+      format: 'mp3',
+      html5: true,
+    });
+
+    sound.play();
+
+    const handleLoad = () => {
+      const node = (sound as any)._sounds[0]._node;
+      // const node:HTMLAudioElement = (audio as any)._sounds[0]._node; // For Typescript
+      node.addEventListener('progress', () => {
+        const duration = (sound as any).duration();
+
+        // https://developer.mozilla.org/en-US/Apps/Fundamentals/Audio_and_video_delivery/buffering_seeking_time_ranges#Creating_our_own_Buffering_Feedback
+        if (duration > 0) {
+          for (let i = 0; i < node.buffered.length; i++) {
+            if (
+              node.buffered.start(node.buffered.length - 1 - i) <
+              node.currentTime
+            ) {
+              const bufferProgress =
+                (node.buffered.end(node.buffered.length - 1 - i) / duration) *
+                100;
+              console.log(bufferProgress);
+            }
+          }
+        }
+      });
+    };
+
+    sound.on('load', handleLoad);
+  };
 }

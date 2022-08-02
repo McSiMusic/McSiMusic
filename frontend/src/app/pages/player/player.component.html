@@ -5,7 +5,7 @@
 <div class="list">
     <div class="tracks-wrapper">
         <div class="tracks" *ngIf='!isLoading'>
-            <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row">
+            <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row" (click)="onTrackClick(track)">
                 <div class="controls cell">
                     <app-play-icon></app-play-icon>
                 </div>
