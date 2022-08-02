@@ -14,6 +14,7 @@ export class MenuComponent implements OnInit {
     private _elementRef: ElementRef
   ) {}
   @Input() elements: MenuItem[] = [];
+  @Input() selectedIndex?: number;
 
   private _visible = false;
   get visible() {

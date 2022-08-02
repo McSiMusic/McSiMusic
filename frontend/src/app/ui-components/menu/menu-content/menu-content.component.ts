@@ -18,6 +18,7 @@ import { dropdownTopMargin } from './consts';
 export class MenuContentComponent implements OnInit, AfterViewChecked {
   @Input() elements: MenuItem[] = [];
   @Input() hostElement: ElementRef<HTMLElement> | null = null;
+  @Input() selectedIndex?: number;
   @ViewChild('content') content: ElementRef<HTMLElement> | null = null;
 
   constructor(private _cdRef: ChangeDetectorRef) {}

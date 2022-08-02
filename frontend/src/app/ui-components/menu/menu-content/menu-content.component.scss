@@ -6,6 +6,8 @@
     border-radius: 4px;
     background-color: $bgColor;
     transform-origin: center;
+    max-height: 400px;
+    overflow: auto;
 
     .menu-item {
         padding: 16px;
@@ -13,6 +15,11 @@
         cursor: pointer;
 
         &:active, &:hover, &:focus {
+            color: $primaryColor
+        }
+
+        .selected {
+            background-color: $borderColor;
             color: $primaryColor
         }
     }

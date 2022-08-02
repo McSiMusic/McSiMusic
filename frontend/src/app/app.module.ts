@@ -29,6 +29,8 @@ import { ClickStopPropagationDirective } from './directives/click-stop-propagati
 import { EditIconComponent } from './icons/edit-icon/edit-icon.component';
 import { DeleteIconComponent } from './icons/delete-icon/delete-icon.component';
 import { DownloadButtonComponent } from './icons/download-icon/download-icon.component';
+import { DropdownComponent } from './ui-components/dropdown/dropdown.component';
+import { DropdownIconComponent } from './icons/dropdown-icon/dropdown-icon.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +59,8 @@ import { DownloadButtonComponent } from './icons/download-icon/download-icon.com
     ApplyIconComponent,
     ClickStopPropagationDirective,
     DownloadButtonComponent,
+    DropdownComponent,
+    DropdownIconComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],

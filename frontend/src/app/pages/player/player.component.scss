@@ -1,0 +1,23 @@
+@import "src/styles";
+
+:host {
+    .header {
+        height: 96px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid $borderColor;
+
+        app-dropdown {
+            width: auto;
+        }
+    }
+
+    .list {
+        flex: 1;
+    }
+
+    .control {
+        height: 96px;
+    }
+}
