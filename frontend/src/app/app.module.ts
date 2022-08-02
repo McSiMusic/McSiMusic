@@ -32,6 +32,7 @@ import { DownloadButtonComponent } from './icons/download-icon/download-icon.com
 import { DropdownComponent } from './ui-components/dropdown/dropdown.component';
 import { DropdownIconComponent } from './icons/dropdown-icon/dropdown-icon.component';
 import { PlayIconComponent } from './icons/play-icon/play-icon.component';
+import { PauseIconComponent } from './icons/pause-icon/pause-icon.component';
 
 @NgModule({
   declarations: [
@@ -63,6 +64,7 @@ import { PlayIconComponent } from './icons/play-icon/play-icon.component';
     DropdownComponent,
     DropdownIconComponent,
     PlayIconComponent,
+    PauseIconComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],

@@ -55,8 +55,8 @@
                     border-bottom: solid 1px $borderColor;
                     cursor: pointer;
 
-                    &:hover {
-                        .cell.controls app-play-icon ::ng-deep * {
+                    &:hover, &.current {
+                        .cell.controls .control ::ng-deep * {
                             fill: $primaryColor;
                         }
 
@@ -68,15 +68,12 @@
                         align-items: center;
                         padding: 8px;
 
-                        &.controls {
-                            app-play-icon {
-                                width: 24px;
-                                height: 24px;
-                                
+                        &.controls .control {
+                            width: 24px;
+                            height: 24px;
 
-                                ::ng-deep * {
-                                    fill: $textColor;
-                                }
+                            ::ng-deep * {
+                                fill: $textColor;
                             }
                         }
 
@@ -100,7 +97,7 @@
         }
     }
 
-    .control {
+    .control-panel {
         border-top: 1px solid $borderColor;
         height: 96px;
     }

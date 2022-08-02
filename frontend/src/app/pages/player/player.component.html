@@ -5,9 +5,11 @@
 <div class="list">
     <div class="tracks-wrapper">
         <div class="tracks" *ngIf='!isLoading'>
-            <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row" (click)="onTrackClick(track)">
+            <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row"
+                (click)="playOrPause(track)" [ngClass]="{ current: isCurrentTrack(track) }">
                 <div class="controls cell">
-                    <app-play-icon></app-play-icon>
+                    <app-play-icon class="control" *ngIf="!isCurrentTrackPlaying(track)"></app-play-icon>
+                    <app-pause-icon class="control" *ngIf="isCurrentTrackPlaying(track)"></app-pause-icon>
                 </div>
                 <div class="number cell">{{i}}</div>
                 <div class="name cell">{{track.name}}</div>
@@ -21,4 +23,4 @@
 
     <app-preloader *ngIf='isLoading'></app-preloader>
 </div>
-<div class="control"></div>
+<div class="control-panel"></div>
