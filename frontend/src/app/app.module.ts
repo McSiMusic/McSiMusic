@@ -33,6 +33,8 @@ import { DropdownComponent } from './ui-components/dropdown/dropdown.component';
 import { DropdownIconComponent } from './icons/dropdown-icon/dropdown-icon.component';
 import { PlayIconComponent } from './icons/play-icon/play-icon.component';
 import { PauseIconComponent } from './icons/pause-icon/pause-icon.component';
+import { NextIconComponent } from './icons/next-icon/next-icon.component';
+import { TimelineComponent } from './pages/player/components/timeline/timeline.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +67,8 @@ import { PauseIconComponent } from './icons/pause-icon/pause-icon.component';
     DropdownIconComponent,
     PlayIconComponent,
     PauseIconComponent,
+    NextIconComponent,
+    TimelineComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],

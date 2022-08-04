@@ -55,27 +55,19 @@
                     border-bottom: solid 1px $borderColor;
                     cursor: pointer;
 
-                    &:hover, &.current {
-                        .cell.controls .control ::ng-deep * {
+                    &:hover,
+                    &.current {
+                        color: $primaryColor;
+
+                        ::ng-deep * {
                             fill: $primaryColor;
                         }
-
-                        color: $primaryColor;
                     }
 
                     .cell {
                         display: flex;
                         align-items: center;
                         padding: 8px;
-
-                        &.controls .control {
-                            width: 24px;
-                            height: 24px;
-
-                            ::ng-deep * {
-                                fill: $textColor;
-                            }
-                        }
 
                         &.name {
                             flex: 1;
@@ -100,5 +92,71 @@
     .control-panel {
         border-top: 1px solid $borderColor;
         height: 96px;
+        display: flex;
+        flex-direction: column;
+        padding: 12px;
+
+        .timeline-wrapper {
+            display: flex;
+            width: 100%;
+            height: 24px;
+
+            app-timeline {
+                width: 100%;
+            }
+        }
+
+        .bottom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            font-size: 20px;
+            flex: 1;
+
+            >* {
+                flex: 1;
+            }
+
+            .name {
+                display: flex;
+                color: $textColor;
+            }
+
+            .play-controls-wrapper {
+                display: flex;
+                justify-content: center;
+                
+                .play-controls {
+                    display: flex;
+                    justify-content: space-between;
+                    width: 150px;
+
+                    .control {
+                        width: 36px;
+                        height: 36px;
+                    }
+
+                    .prev {
+                        transform: scaleX(-1);
+                    }
+                }
+            }
+        }
+    }
+
+    .control {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        cursor: pointer;
+
+        ::ng-deep * {
+            fill: $textColor;
+        }
+
+        &:hover::ng-deep * {
+            fill: $primaryColor;
+        }
     }
 }

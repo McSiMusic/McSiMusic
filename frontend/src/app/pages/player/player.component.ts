@@ -99,6 +99,9 @@ export class PlayerComponent implements OnInit, AfterViewInit {
     );
 
     this.tracks$.subscribe((tracks) => {
+      if (tracks.length <= TRACK_PAGE_SIZE) {
+        this._playerService.setCurrentTrack(tracks[0]);
+      }
       this.isLoading = false;
     });
 
@@ -109,11 +112,18 @@ export class PlayerComponent implements OnInit, AfterViewInit {
     this._page.next(this._page.value + 1);
   }
 
-  playOrPause = (track: Track) => {
-    if (!this.isCurrentTrack(track) || !this._playerService.isPlaying()) {
-      this._playerService.play(track);
+  playOrPause = (track?: Track) => {
+    const targetTrack = track || this._playerService.currentTrack;
+    if (targetTrack === undefined) return;
+
+    if (!this.isCurrentTrack(targetTrack)) {
+      this._playerService.play(targetTrack);
     } else {
-      this._playerService.pause(track);
+      if (this._playerService.isPlaying()) {
+        this._playerService.pause(targetTrack);
+      } else {
+        this._playerService.resume(targetTrack);
+      }
     }
   };
 
@@ -121,7 +131,15 @@ export class PlayerComponent implements OnInit, AfterViewInit {
     return this._playerService.isCurrentTrack(track);
   };
 
+  isPlaying = () => {
+    return this._playerService.isPlaying();
+  };
+
   isCurrentTrackPlaying = (track: Track) => {
     return this._playerService.isCurrentTrackPlaying(track);
   };
+
+  get currentTrackName() {
+    return this._playerService.currentTrack?.name;
+  }
 }

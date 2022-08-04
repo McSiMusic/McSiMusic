@@ -23,4 +23,22 @@
 
     <app-preloader *ngIf='isLoading'></app-preloader>
 </div>
-<div class="control-panel"></div>
+<div class="control-panel">
+    <div class="timeline-wrapper">
+        <app-timeline></app-timeline>
+    </div>
+    <div class="bottom">
+        <div class="name">
+            {{currentTrackName}}
+        </div>
+        <div class="play-controls-wrapper">
+            <div class="play-controls">
+                <app-next-icon class="control prev"></app-next-icon>
+                <app-play-icon class="control" *ngIf="!isPlaying()" (click)="playOrPause()"></app-play-icon>
+                <app-pause-icon class="control" *ngIf="isPlaying()" (click)="playOrPause()"></app-pause-icon>
+                <app-next-icon class="control"></app-next-icon>
+            </div>
+        </div>
+        <div></div>
+    </div>
+</div>
