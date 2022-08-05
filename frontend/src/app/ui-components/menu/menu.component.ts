@@ -2,6 +2,7 @@ import { Component, Input, OnInit, ElementRef } from '@angular/core';
 import { MenuItem } from './types';
 import { PortalService } from '../../services/portal/PortalService';
 import { MenuContentComponent } from './menu-content/menu-content.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-menu',
@@ -16,6 +17,7 @@ export class MenuComponent implements OnInit {
   @Input() elements: MenuItem[] = [];
   @Input() selectedIndex?: number;
   menuContentElement?: MenuContentComponent;
+  private _onOutsideClickSubscription?: Subscription;
 
   private _visible = false;
   get visible() {
@@ -30,10 +32,12 @@ export class MenuComponent implements OnInit {
         this.menuContentElement = c.instance;
         this.menuContentElement.elements = this.elements;
         this.menuContentElement.hostElement = this._elementRef;
-        this.menuContentElement.onOutsideClick.subscribe(this.onClickOutside);
+        this._onOutsideClickSubscription =
+          this.menuContentElement.onOutsideClick.subscribe(this.onClickOutside);
       });
     } else {
       this.menuContentElement?.onOutsideClick.unsubscribe();
+      this._onOutsideClickSubscription?.unsubscribe();
       this._portalService.clear();
     }
   }

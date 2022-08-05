@@ -1,7 +1,9 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
+  NgZone,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -17,6 +19,11 @@ import {
   scan,
   shareReplay,
   takeWhile,
+  first,
+  last,
+  take,
+  skip,
+  Subscription,
 } from 'rxjs';
 import { TRACK_PAGE_SIZE } from 'src/app/services/consts';
 import { Track } from 'src/app/services/types';
@@ -24,23 +31,27 @@ import { Observable } from 'rxjs';
 import { sToTime } from '../../utils/durtaionConvertor';
 import { IntersectionService } from 'src/app/services/IntersectionService';
 import { PlayerService } from '../../services/PlayerService';
+import { OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'app-player',
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.scss'],
 })
-export class PlayerComponent implements OnInit, AfterViewInit {
+export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private _userInfoService: UserInfoService,
     private _interSectionService: IntersectionService,
-    private _playerService: PlayerService
+    private _playerService: PlayerService,
+    private _ngZone: NgZone
   ) {
     this.folderDropdownItems =
       this._userInfoService.folders?.map((f) => ({
         name: f,
         value: f,
       })) || [];
+
+    this._endSubscription = this._playerService.onEnd.subscribe(this._onEnd);
   }
 
   ngAfterViewInit(): void {
@@ -59,6 +70,9 @@ export class PlayerComponent implements OnInit, AfterViewInit {
   tracks$?: Observable<Track[]>;
   @ViewChild('pageLoadingAnchor') pageLoadingAnchor?: ElementRef<HTMLElement>;
   folderDropdownItems: DropdownItem[] = [];
+  isTracksLoaded = false;
+  tracks: Track[] = [];
+  private _endSubscription: Subscription;
 
   onFolderChange = (value: string) => {
     this._currentFolder.next(value);
@@ -79,6 +93,7 @@ export class PlayerComponent implements OnInit, AfterViewInit {
         this._page.complete();
         this._page = new BehaviorSubject(0);
         this.isLoading = true;
+        this.isTracksLoaded = false;
       }),
       switchMap((folder) =>
         this._page.pipe(
@@ -92,10 +107,11 @@ export class PlayerComponent implements OnInit, AfterViewInit {
           scan((acc, tracks) => [...acc, ...tracks]),
           finalize(() => {
             this.isPageLoading = false;
+            this.isTracksLoaded = true;
           })
         )
       ),
-      shareReplay()
+      shareReplay(1)
     );
 
     this.tracks$.subscribe((tracks) => {
@@ -103,6 +119,7 @@ export class PlayerComponent implements OnInit, AfterViewInit {
         this._playerService.setCurrentTrack(tracks[0]);
       }
       this.isLoading = false;
+      this.tracks = tracks;
     });
 
     this.onFolderChange(this._userInfoService.folders![0]);
@@ -141,5 +158,43 @@ export class PlayerComponent implements OnInit, AfterViewInit {
 
   get currentTrackName() {
     return this._playerService.currentTrack?.name;
+  }
+
+  private _onEnd = () => {
+    this.playNext();
+  };
+
+  playNext = () => {
+    if (this._playerService.currentTrack === undefined) return;
+    const index = this.tracks.indexOf(this._playerService.currentTrack);
+    if (index === -1) return;
+
+    let track: Track | undefined = undefined;
+    if (this.tracks[index + 1] !== undefined) {
+      track = this.tracks[index + 1];
+    } else if (this.isTracksLoaded) {
+      track = this.tracks[0];
+    }
+
+    if (track !== undefined) {
+      this._ngZone.run(() => this._playerService.play(track!));
+    } else {
+      this.loadNextPage();
+      this.tracks$?.pipe(skip(1), take(1)).subscribe(this._onEnd);
+    }
+  };
+
+  playPrev = () => {
+    if (this._playerService.currentTrack === undefined) return;
+    const index = this.tracks.indexOf(this._playerService.currentTrack);
+    if (index === -1) return;
+
+    this._playerService.play(
+      index === 0 ? this.tracks[0] : this.tracks[index - 1]
+    );
+  };
+
+  ngOnDestroy(): void {
+    this._endSubscription.unsubscribe();
   }
 }

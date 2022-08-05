@@ -4,10 +4,6 @@ import jwt from "jsonwebtoken";
 import { COOKIE_NAME } from "../auth/auth";
 import { config } from "dotenv";
 import { oauth2_v2 } from "googleapis";
-import { parseBuffer } from "music-metadata";
-import multer from "multer";
-import mongoose from "mongoose";
-import path from "path";
 const conf = config().parsed;
 
 export const initFolderController = (express: Express) => {

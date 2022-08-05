@@ -7,11 +7,13 @@
     .loading-progress {
         background-color: $borderColor;
         top: 1px;
+        pointer-events: none;
     }
 
     .track-progress {
         background-color: $primaryColor;
         top: 1px;
+        pointer-events: none;
     }
 
     .timeline, .loading-progress, .track-progress {
@@ -22,9 +24,11 @@
     .timeline {
         width: 100%;
         border: solid 1px $borderColor;
+        cursor: pointer;
     }
 
     .handle {
+        pointer-events: none;
         position: absolute;
         width: 20px;
         height: 20px;

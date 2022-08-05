@@ -11,7 +11,7 @@
                     <app-play-icon class="control" *ngIf="!isCurrentTrackPlaying(track)"></app-play-icon>
                     <app-pause-icon class="control" *ngIf="isCurrentTrackPlaying(track)"></app-pause-icon>
                 </div>
-                <div class="number cell">{{i}}</div>
+                <div class="number cell">{{i + 1}}</div>
                 <div class="name cell">{{track.name}}</div>
                 <div class="duration cell">{{convertDuration(track.duration)}}</div>
             </div>
@@ -33,10 +33,10 @@
         </div>
         <div class="play-controls-wrapper">
             <div class="play-controls">
-                <app-next-icon class="control prev"></app-next-icon>
+                <app-next-icon class="control prev" (click)="playPrev()"></app-next-icon>
                 <app-play-icon class="control" *ngIf="!isPlaying()" (click)="playOrPause()"></app-play-icon>
                 <app-pause-icon class="control" *ngIf="isPlaying()" (click)="playOrPause()"></app-pause-icon>
-                <app-next-icon class="control"></app-next-icon>
+                <app-next-icon class="control" (click)="playNext()"></app-next-icon>
             </div>
         </div>
         <div></div>

@@ -46,6 +46,8 @@ export const initTrackController = (express: Express) => {
     const trackId = req.query.trackId;
     const track = await Track.findById(trackId);
 
+    res.header("Accept-Ranges", "bytes");
+
     res.send(track?.track);
   });
 

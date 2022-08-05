@@ -10,33 +10,38 @@ export class PlayerService {
 
   currentSoundBufferProgressUpdated = new EventEmitter<number>();
   onPlaying = new EventEmitter<number>();
+  onEnd = new EventEmitter();
 
   private _currentSound?: Howl;
   private _currentTrack?: Track;
   private _sounds = new Map<string, Howl>();
   private _playingInterval?: number;
+  //private _currentId?: number;
 
-  setCurrentTrack = (track: Track) => {
+  setCurrentTrack = (track?: Track) => {
     this._currentTrack = track;
-    this._setCurrentSound(this._getSound(track));
+    this._setCurrentSound(track ? this._getSound(track) : undefined);
   };
 
   get currentTrack() {
     return this._currentTrack;
   }
 
-  private _setCurrentSound = (sound: Howl) => {
+  private _setCurrentSound = (sound?: Howl) => {
     if (sound === this._currentSound) return;
 
     if (this._currentSound) {
-      sound.off('play', this._onPlay);
-      sound.off('pause', this._onPause);
-      sound.off('stop', this._onStop);
+      sound?.off('play', this._onPlay);
+      sound?.off('pause', this._onPause);
+      sound?.off('stop', this._onStop);
+      sound?.off('end', this._onEnd);
+      this._currentSound.stop();
     }
 
-    sound.on('play', this._onPlay);
-    sound.on('pause', this._onPause);
-    sound.on('stop', this._onStop);
+    sound?.on('play', this._onPlay);
+    sound?.on('pause', this._onPause);
+    sound?.on('stop', this._onStop);
+    sound?.on('end', this._onEnd);
 
     if (this._currentSound !== undefined) {
       const node = this._getNode(this._currentSound);
@@ -48,11 +53,10 @@ export class PlayerService {
   };
 
   play(track: Track) {
-    this._currentSound?.stop();
     this._currentTrack = track;
     const sound = this._getSound(track);
-    sound.play();
     this._setCurrentSound(sound);
+    /* this._currentId =  */ sound.play();
   }
 
   pause(track: Track) {
@@ -61,6 +65,18 @@ export class PlayerService {
 
   resume(track: Track) {
     this._getSound(track).play();
+  }
+
+  seek(percent: number) {
+    if (this._currentSound === undefined) {
+      return;
+    }
+
+    const seek = (this._currentSound.duration() * percent) / 100;
+
+    this._currentSound.pause(); // HACK
+    this._currentSound.seek(seek);
+    this._currentSound.play(); // HACK
   }
 
   private _listenLoading = () => {
@@ -137,5 +153,9 @@ export class PlayerService {
       (this._currentSound.seek() / this._currentSound.duration()) * 100;
 
     this.onPlaying.emit(progress);
+  };
+
+  private _onEnd = () => {
+    this.onEnd.emit();
   };
 }

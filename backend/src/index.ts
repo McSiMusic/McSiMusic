@@ -25,6 +25,13 @@ initMongo();
 initTrackController(app);
 initFolderController(app);
 
-app.listen(parseInt(conf?.PORT || "5000"), conf?.HOST || "localhost", () => {
-  console.log("started");
-});
+const server = app.listen(
+  parseInt(conf?.PORT || "5000"),
+  conf?.HOST || "localhost",
+  () => {
+    console.log("started");
+  }
+);
+
+server.keepAliveTimeout = 30 * 1000;
+server.headersTimeout = 35 * 1000;
