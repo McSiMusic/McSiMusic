@@ -1,11 +1,4 @@
-<div class="empty-editor">
-    <app-button (click)="onChooseClick()">Choose file</app-button>
-</div>
-
-<app-modal [visible]="chooseFileModalVisible" [modalTitle]="'Choose file'" [okText]="'Choose'"
-    [okEnabled]="isTrackSelected()" (onOk)="onOk()" (onCancel)="onCancel()">
-    <div class="file-manager">
-        <app-folders [actionEnabled]="false"></app-folders>
-        <app-tracks [actionEnabled]="false" (selectionChanged)="onSelectionChanged($event)"></app-tracks>
-    </div>
-</app-modal>
+<ng-container [ngSwitch]="state">
+    <app-empty-state *ngSwitchCase="EditorStateEnum.ChooseTrack" (onTrackSelected)="onTrackSelected($event)"></app-empty-state>
+    <div *ngSwitchCase="EditorStateEnum.ChooseAction">{{currentTrack?.name}}</div>
+</ng-container>

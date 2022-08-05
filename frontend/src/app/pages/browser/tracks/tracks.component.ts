@@ -92,6 +92,7 @@ export class TracksComponent implements AfterViewInit, OnInit {
     });
   }
 
+  @Output() onDoubleClick = new EventEmitter<Track>();
   @ViewChild('pageLoadingAnchor') pageLoadingAnchor?: ElementRef<HTMLElement>;
   @Input() actionEnabled = true;
   @Output() selectionChanged = new EventEmitter<Track | undefined>();
@@ -193,6 +194,10 @@ export class TracksComponent implements AfterViewInit, OnInit {
 
   isTrackSelected = (track?: Track) => {
     return this.currentTrack?._id === track?._id;
+  };
+
+  onTrackDoubleClick = (track?: Track) => {
+    this.onDoubleClick.emit(track);
   };
 
   onDndLeave = () => {

@@ -38,6 +38,7 @@ import { TimelineComponent } from './pages/player/components/timeline/timeline.c
 import { ModalComponent } from './ui-components/modal/modal.component';
 import { ModalContentComponent } from './ui-components/modal/modal-content/modal-content.component';
 import { CloseIconComponent } from './icons/close-icon/close-icon.component';
+import { EmptyStateComponent } from './pages/editor/components/empty-state/empty-state.component';
 
 @NgModule({
   declarations: [
@@ -75,6 +76,7 @@ import { CloseIconComponent } from './icons/close-icon/close-icon.component';
     ModalComponent,
     ModalContentComponent,
     CloseIconComponent,
+    EmptyStateComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],

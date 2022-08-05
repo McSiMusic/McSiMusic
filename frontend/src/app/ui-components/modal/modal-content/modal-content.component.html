@@ -1,7 +1,7 @@
 <div class="modal">
     <div class="header">
         <div class="title">{{modalTitle}}</div>
-        <app-close-icon></app-close-icon>
+        <app-close-icon (click)="onCancel.emit()"></app-close-icon>
     </div>
     <div class="content">
         <ng-content></ng-content>

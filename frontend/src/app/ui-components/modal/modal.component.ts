@@ -13,13 +13,14 @@ import { PortalType } from 'src/app/services/portal/types';
 import { PortalService } from '../../services/portal/PortalService';
 import { ModalContentComponent } from './modal-content/modal-content.component';
 import { Subscription } from 'rxjs';
+import { OnDestroy } from '@angular/core';
 
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss'],
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent implements OnInit, OnDestroy {
   constructor(private _portalService: PortalService) {}
   modalContentComponent?: ModalContentComponent;
 
@@ -87,4 +88,7 @@ export class ModalComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+  ngOnDestroy(): void {
+    this._portalService.clear(PortalType.Modal);
+  }
 }

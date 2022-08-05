@@ -9,7 +9,7 @@
             </div>
             <div class="header-cell cell action-row" *ngIf="actionEnabled">Actions</div>
         </div>
-        <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row"
+        <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row" (dblclick)="onTrackDoubleClick(track)"
             (click)="selectTrack(track)" [ngClass]="{ selected: isTrackSelected(track) }" click-stop-propagation>
             <div *ngFor="let descriptor of tableDescriptor" class="cell {{descriptor.cellClass}}"
                 [ngClass]="{ primary: descriptor.primary }">
