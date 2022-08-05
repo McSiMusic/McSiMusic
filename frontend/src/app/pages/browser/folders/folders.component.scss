@@ -3,6 +3,7 @@
 :host {
     display: flex;
     flex-direction: column;
+    border-right: solid 1px $borderColor;
 
     .folders-header {
         height: 72px;

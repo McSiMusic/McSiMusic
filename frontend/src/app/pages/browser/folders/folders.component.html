@@ -1,7 +1,7 @@
 <app-preloader *ngIf="foldersLoading"></app-preloader>
 <div class="folders-header" *ngIf="!foldersLoading">
     <div class="folders-caption">Folders</div>
-    <div class="folders-add control-icon" (click)="createFolder()"></div>
+    <div class="folders-add control-icon" *ngIf="actionEnabled" (click)="createFolder()"></div>
 </div>
 <div class="folders">
     <div class="folder" *ngFor="let folder of folders"
@@ -9,9 +9,9 @@
         <ng-container [ngSwitch]="folder.status">
             <ng-container *ngSwitchCase="'Idle'">
                 <div class="folder-caption">{{ folder.name }}</div>
-                <app-delete-icon *ngIf="isDeleteEnabled()" class="folder-delete control-icon"
+                <app-delete-icon *ngIf="actionEnabled && isDeleteEnabled()" class="folder-delete control-icon"
                     (click)="deleteFolder(folder)" click-stop-propagation></app-delete-icon>
-                <app-edit-icon class="folder-delete control-icon" (click)="startEditFolder(folder)"
+                <app-edit-icon *ngIf="actionEnabled" class="folder-delete control-icon" (click)="startEditFolder(folder)"
                     click-stop-propagation></app-edit-icon>
             </ng-container>
 

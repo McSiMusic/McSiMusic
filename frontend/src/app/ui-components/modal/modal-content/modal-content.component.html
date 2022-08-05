@@ -1,0 +1,14 @@
+<div class="modal">
+    <div class="header">
+        <div class="title">{{modalTitle}}</div>
+        <app-close-icon></app-close-icon>
+    </div>
+    <div class="content">
+        <ng-content></ng-content>
+    </div>
+    <div class="footer">
+        <app-button (click)="onCancel.emit()">{{cancelText}}</app-button>
+        <app-button (click)="onOk.emit()" [disabled]="!okEnabled">{{okText}}</app-button>
+    </div>
+</div>
+<div class="backdrop"></div>

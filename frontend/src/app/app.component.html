@@ -7,4 +7,5 @@
         <router-outlet></router-outlet>
     </div>
 </ng-container>
-<ng-template portalRoot></ng-template>
+<ng-template [portalRoot]="PortalTypeEnum.Dropdown"></ng-template>
+<ng-template [portalRoot]="PortalTypeEnum.Modal"></ng-template>

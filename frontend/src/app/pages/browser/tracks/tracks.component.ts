@@ -2,7 +2,10 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
+  Input,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { UserInfoService } from 'src/app/services/UserInfoService';
@@ -90,6 +93,8 @@ export class TracksComponent implements AfterViewInit, OnInit {
   }
 
   @ViewChild('pageLoadingAnchor') pageLoadingAnchor?: ElementRef<HTMLElement>;
+  @Input() actionEnabled = true;
+  @Output() selectionChanged = new EventEmitter<Track | undefined>();
 
   private _page = new BehaviorSubject(0);
   private _filter = new BehaviorSubject('');
@@ -183,6 +188,7 @@ export class TracksComponent implements AfterViewInit, OnInit {
 
   selectTrack = (track?: Track) => {
     this.currentTrack = this.isTrackSelected(track) ? undefined : track;
+    this.selectionChanged.emit(this.currentTrack);
   };
 
   isTrackSelected = (track?: Track) => {

@@ -17,7 +17,7 @@ export class RoleGuardService implements CanActivate {
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot) {
-    this._portalService.clear();
+    this._portalService.clearAll();
     return this._authService.auth().pipe(
       map((status) => {
         const data = route.data as RouteData;

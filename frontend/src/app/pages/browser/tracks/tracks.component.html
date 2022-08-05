@@ -7,7 +7,7 @@
                 <div class="header-cell-name">{{ descriptor.displayName }}</div>
                 <app-sort-icon [ngClass]="{ active: isActiveSort(descriptor.key), asc: isAsc() }"></app-sort-icon>
             </div>
-            <div class="header-cell cell action-row">Actions</div>
+            <div class="header-cell cell action-row" *ngIf="actionEnabled">Actions</div>
         </div>
         <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row"
             (click)="selectTrack(track)" [ngClass]="{ selected: isTrackSelected(track) }" click-stop-propagation>
@@ -16,14 +16,19 @@
                 {{ getConvertedValue(track[descriptor.key], descriptor) }}
             </div>
 
-            <div class="cell action-row" click-stop-propagation>
+            <div class="cell action-row" click-stop-propagation *ngIf="actionEnabled">
                 <app-download-icon class="control-icon" (click)="downloadTrack(track)"></app-download-icon>
                 <app-delete-icon class="control-icon" (click)="deleteTrack(track)"></app-delete-icon>
             </div>
         </div>
     </div>
 
-    <app-upload [isDnd]="true" (onEnter)="onDndEnter()" (onLeave)="onDndLeave()" (onUpload)="onUpload($event)"
+
+    <div class="empty-message" *ngIf="!actionEnabled && isEmpty">
+        It's empty here...
+    </div>
+
+    <app-upload *ngIf="actionEnabled" [isDnd]="true" (onEnter)="onDndEnter()" (onLeave)="onDndLeave()" (onUpload)="onUpload($event)"
         [ngClass]="{ visible: isEmpty, hover: dndState === 'Hover' }">
         <div class="dnd-area" [ngClass]="{ hover: dndState === 'Hover' }">
             <div *ngIf="isEmpty" class="dnd-label">Click or drag to upload</div>
@@ -35,7 +40,7 @@
     <app-preloader-logo *ngIf='!isLoading && isPageLoading' class="page-loader" [size]="20"></app-preloader-logo>
 </div>
 <app-preloader *ngIf='isLoading' [caption]="preloaderProgress"></app-preloader>
-<div class="tracks-action-panel">
+<div class="tracks-action-panel" *ngIf="actionEnabled">
     <app-button (click)="downloadTrack()" [disabled]="currentTrack === undefined">Download</app-button>
     <app-button (click)="deleteTrack()" [disabled]="currentTrack === undefined">Delete</app-button>
     <app-upload (onUpload)="onUpload($event)">Upload</app-upload>

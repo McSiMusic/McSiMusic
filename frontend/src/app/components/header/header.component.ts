@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PortalType } from 'src/app/services/portal/types';
 import { UserInfoService } from 'src/app/services/UserInfoService';
 import { MenuItem } from 'src/app/ui-components/menu/types';
 import { AuthService } from '../../services/AuthService';
@@ -20,7 +21,7 @@ export class HeaderComponent implements OnInit {
     {
       action: () => {
         this._authService.logout().subscribe();
-        this._portalService.clear();
+        this._portalService.clear(PortalType.Dropdown);
       },
       name: 'Logout',
     },

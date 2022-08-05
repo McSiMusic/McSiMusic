@@ -1,0 +1,27 @@
+@import "src/styles";
+
+:host {
+    .empty-editor {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        justify-content: center;
+
+        app-button {
+            color: $primaryColor;
+        }
+    }
+    
+}
+
+.file-manager {
+    width: 70vw;
+    height: 70vh;
+
+    display: flex;
+
+    app-tracks {
+        flex: 1;
+    }
+}

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { without } from 'lodash';
 import { UserInfoService } from 'src/app/services/UserInfoService';
 import { Folder, FolderStatus } from './types';
@@ -19,6 +19,8 @@ export class FoldersComponent {
   }
   foldersLoading = false;
   folders: Folder[] = [];
+
+  @Input() actionEnabled = true;
   @ViewChild(InputComponent) input?: InputComponent;
 
   private get _currentFolder() {

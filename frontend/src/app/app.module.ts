@@ -35,6 +35,9 @@ import { PlayIconComponent } from './icons/play-icon/play-icon.component';
 import { PauseIconComponent } from './icons/pause-icon/pause-icon.component';
 import { NextIconComponent } from './icons/next-icon/next-icon.component';
 import { TimelineComponent } from './pages/player/components/timeline/timeline.component';
+import { ModalComponent } from './ui-components/modal/modal.component';
+import { ModalContentComponent } from './ui-components/modal/modal-content/modal-content.component';
+import { CloseIconComponent } from './icons/close-icon/close-icon.component';
 
 @NgModule({
   declarations: [
@@ -69,6 +72,9 @@ import { TimelineComponent } from './pages/player/components/timeline/timeline.c
     PauseIconComponent,
     NextIconComponent,
     TimelineComponent,
+    ModalComponent,
+    ModalContentComponent,
+    CloseIconComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],

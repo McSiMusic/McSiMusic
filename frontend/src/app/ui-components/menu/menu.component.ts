@@ -3,6 +3,7 @@ import { MenuItem } from './types';
 import { PortalService } from '../../services/portal/PortalService';
 import { MenuContentComponent } from './menu-content/menu-content.component';
 import { Subscription } from 'rxjs';
+import { PortalType } from '../../services/portal/types';
 
 @Component({
   selector: 'app-menu',
@@ -14,6 +15,7 @@ export class MenuComponent implements OnInit {
     private _portalService: PortalService,
     private _elementRef: ElementRef
   ) {}
+
   @Input() elements: MenuItem[] = [];
   @Input() selectedIndex?: number;
   menuContentElement?: MenuContentComponent;
@@ -28,17 +30,23 @@ export class MenuComponent implements OnInit {
 
     this._visible = value;
     if (value) {
-      this._portalService.add(MenuContentComponent, (c) => {
-        this.menuContentElement = c.instance;
-        this.menuContentElement.elements = this.elements;
-        this.menuContentElement.hostElement = this._elementRef;
-        this._onOutsideClickSubscription =
-          this.menuContentElement.onOutsideClick.subscribe(this.onClickOutside);
-      });
+      this._portalService.add(
+        MenuContentComponent,
+        PortalType.Dropdown,
+        (c) => {
+          this.menuContentElement = c.instance;
+          this.menuContentElement.elements = this.elements;
+          this.menuContentElement.hostElement = this._elementRef;
+          this._onOutsideClickSubscription =
+            this.menuContentElement.onOutsideClick.subscribe(
+              this.onClickOutside
+            );
+        }
+      );
     } else {
       this.menuContentElement?.onOutsideClick.unsubscribe();
       this._onOutsideClickSubscription?.unsubscribe();
-      this._portalService.clear();
+      this._portalService.clear(PortalType.Dropdown);
     }
   }
 
