@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Track } from 'src/app/services/types';
-import { EditorState } from './types';
+import { EditorState, EditorAction } from './types';
 
 @Component({
   selector: 'app-editor',
@@ -9,12 +9,23 @@ import { EditorState } from './types';
 })
 export class EditorComponent implements OnInit {
   EditorStateEnum = EditorState;
-  state = EditorState.ChooseTrack;
+  EditorActionEnum = EditorAction;
+
+  state = EditorState.NoFileChoosen;
+  action: EditorAction | null = null;
   currentTrack?: Track;
 
   onTrackSelected = (track: Track) => {
+    if (this.currentTrack === track) return;
     this.currentTrack = track;
-    this.state = EditorState.ChooseAction;
+    this.action = null;
+    this.state = EditorState.NoActionChoosen;
+  };
+
+  onActionChange = (action: EditorAction) => {
+    if (this.action === action) return;
+    this.action = action;
+    this.state = EditorState.ActionChoosen;
   };
 
   constructor() {}

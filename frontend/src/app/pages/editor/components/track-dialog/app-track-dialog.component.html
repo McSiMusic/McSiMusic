@@ -1,5 +1,5 @@
 <div class="empty-editor">
-    <app-button (click)="onChooseClick()">Choose file</app-button>
+    <app-button (click)="onChooseClick()">{{buttonCaption}}</app-button>
 </div>
 
 <app-modal [visible]="chooseFileModalVisible" [modalTitle]="'Choose file'" [okText]="'Choose'"

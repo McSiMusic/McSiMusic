@@ -1,0 +1,5 @@
+<app-button *ngIf="!loading && bpm === undefined" [disabled]="trackId === undefined" (click)="getBpm()">Get BPM</app-button>
+<app-preloader *ngIf="loading"></app-preloader>
+<div class="result" *ngIf="bpm !== undefined">
+    Tempo is <span class="bpm">{{bpm}}</span> BPM
+</div>

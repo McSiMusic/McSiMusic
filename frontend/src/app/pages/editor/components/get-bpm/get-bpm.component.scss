@@ -1,0 +1,17 @@
+@import "src/styles";
+
+:host {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .result {
+        color: $textColor;
+        font-size: 96px;
+
+        .bpm {
+            color: $primaryColor;
+        }
+    }
+}

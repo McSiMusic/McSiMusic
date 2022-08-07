@@ -7,6 +7,7 @@ import { initMongo } from "./mongo/init";
 import { initTrackController } from "./controllers/track";
 import bodyParser, { urlencoded } from "body-parser";
 import { initFolderController } from "./controllers/folder";
+import { initActionsController } from "./controllers/actions";
 
 const conf = config().parsed;
 
@@ -24,6 +25,7 @@ initAuthEndpoint(app);
 initMongo();
 initTrackController(app);
 initFolderController(app);
+initActionsController(app);
 
 const server = app.listen(
   parseInt(conf?.PORT || "5000"),

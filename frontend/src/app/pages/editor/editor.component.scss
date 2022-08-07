@@ -1,2 +1,42 @@
 @import "src/styles";
 
+:host {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+
+    .files-header {
+        height: 72px;
+        border-bottom: solid 1px $borderColor;
+        box-sizing: border-box;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        color: $textColor;
+
+        .filename {
+            margin: 0 16px;
+        } 
+        
+        .action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    .action-container {
+        flex: 1;
+        display: flex;
+        width: 100%;
+    }
+
+    .no-action-container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

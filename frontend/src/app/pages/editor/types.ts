@@ -1,4 +1,12 @@
 export enum EditorState {
-  ChooseTrack = 'ChooseTrack',
-  ChooseAction = 'ChooseAction',
+  NoFileChoosen = 'NoFileChoosen',
+  NoActionChoosen = 'NoActionChoosen',
+  ActionChoosen = 'ActionChoosen',
+}
+
+export enum EditorAction {
+  Trim,
+  Mix,
+  GetBPM,
+  //Concat
 }

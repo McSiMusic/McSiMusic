@@ -69,7 +69,7 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   private _page = new BehaviorSubject(0);
   tracks$?: Observable<Track[]>;
   @ViewChild('pageLoadingAnchor') pageLoadingAnchor?: ElementRef<HTMLElement>;
-  folderDropdownItems: DropdownItem[] = [];
+  folderDropdownItems: DropdownItem<string>[] = [];
   isTracksLoaded = false;
   tracks: Track[] = [];
   private _endSubscription: Subscription;

@@ -1,4 +1,4 @@
-export interface DropdownItem {
+export interface DropdownItem<T> {
   name: string;
-  value: string;
+  value: T;
 }

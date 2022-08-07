@@ -1,14 +1,15 @@
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { Track } from 'src/app/services/types';
 
 @Component({
-  selector: 'app-empty-state',
-  templateUrl: './empty-state.component.html',
-  styleUrls: ['./empty-state.component.scss'],
+  selector: 'app-track-dialog',
+  templateUrl: './app-track-dialog.component.html',
+  styleUrls: ['./app-track-dialog.component.scss'],
 })
-export class EmptyStateComponent {
+export class TrackDialogComponent {
   constructor() {}
 
+  @Input() buttonCaption = 'Choose file';
   @Output() onTrackSelected = new EventEmitter<Track>();
   chooseFileModalVisible = false;
   selectedTrack?: Track;

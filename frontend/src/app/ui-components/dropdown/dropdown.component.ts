@@ -15,28 +15,33 @@ import { MenuComponent } from '../menu/menu.component';
   templateUrl: './dropdown.component.html',
   styleUrls: ['./dropdown.component.scss'],
 })
-export class DropdownComponent implements OnInit {
-  @Input() items: DropdownItem[] = [];
+export class DropdownComponent<T> implements OnInit {
+  @Input() items: DropdownItem<T>[] = [];
   @Input() selectedIndex?: number;
   @Input() placeholder = 'Choose value';
   @Input() bordered = true;
-  @Output() onChange = new EventEmitter<string>();
+  @Output() onChange = new EventEmitter<T>();
 
+  selectedValue: string = '';
   menuItems: MenuItem[] = [];
   visible = false;
 
   @ViewChild(MenuComponent) menuComponent?: MenuComponent;
 
-  constructor() {}
+  constructor() {
+    this._updateSelectedValue();
+  }
 
   ngOnInit(): void {
     this.menuItems = this.items.map((item, i) => ({
       action: () => this.onMenuItemClick(item, i),
       name: item.name,
     }));
+
+    this._updateSelectedValue();
   }
 
-  onMenuItemClick = (item: DropdownItem, index: number) => {
+  onMenuItemClick = (item: DropdownItem<T>, index: number) => {
     this.selectedIndex = index;
     this.menuComponent?.toggleVisible();
     this.onChange.emit(item.value);
@@ -46,10 +51,10 @@ export class DropdownComponent implements OnInit {
     this.visible = !this.visible;
   };
 
-  get selectedValue() {
-    return this.selectedIndex !== undefined
-      ? this.menuComponent?.elements[this.selectedIndex]?.name ||
-          this.placeholder
-      : this.placeholder;
-  }
+  private _updateSelectedValue = () => {
+    this.selectedValue =
+      this.selectedIndex !== undefined
+        ? this.menuItems[this.selectedIndex]?.name || this.placeholder
+        : this.placeholder;
+  };
 }

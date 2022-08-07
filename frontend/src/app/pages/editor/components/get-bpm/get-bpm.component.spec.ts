@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EmptyStateComponent } from './empty-state.component';
+import { GetBpmComponent } from './get-bpm.component';
 
-describe('EmptyStateComponent', () => {
-  let component: EmptyStateComponent;
-  let fixture: ComponentFixture<EmptyStateComponent>;
+describe('GetBpmComponent', () => {
+  let component: GetBpmComponent;
+  let fixture: ComponentFixture<GetBpmComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EmptyStateComponent ]
+      declarations: [ GetBpmComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(EmptyStateComponent);
+    fixture = TestBed.createComponent(GetBpmComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

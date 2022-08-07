@@ -1,4 +1,23 @@
-<ng-container [ngSwitch]="state">
-    <app-empty-state *ngSwitchCase="EditorStateEnum.ChooseTrack" (onTrackSelected)="onTrackSelected($event)"></app-empty-state>
-    <div *ngSwitchCase="EditorStateEnum.ChooseAction">{{currentTrack?.name}}</div>
-</ng-container>
+<div class="files-header" *ngIf="currentTrack !== undefined">
+    <div class="action" *ngIf="action !== null">
+        Action:&nbsp;
+        <action-dropdown (onChange)="onActionChange($event)" [selectedValue]="action" [bordered]="false"></action-dropdown>
+    </div>
+    <div class="filename">
+        File:&nbsp;
+        {{currentTrack?.name}}
+    </div>
+    <app-track-dialog (onTrackSelected)="onTrackSelected($event)" buttonCaption="Choose other file"></app-track-dialog>
+</div>
+<div class="no-action-container">
+    <ng-container [ngSwitch]="state">
+        <app-track-dialog *ngSwitchCase="EditorStateEnum.NoFileChoosen" (onTrackSelected)="onTrackSelected($event)"></app-track-dialog>
+        <action-dropdown *ngSwitchCase="EditorStateEnum.NoActionChoosen" (onChange)="onActionChange($event)"></action-dropdown>
+        <div *ngSwitchCase="EditorStateEnum.ActionChoosen" class="action-container">
+            <ng-container [ngSwitch]="action">
+                <app-get-bpm *ngSwitchCase="EditorActionEnum.GetBPM" [trackId]="currentTrack?._id"></app-get-bpm>
+            </ng-container>
+        </div>
+    </ng-container>
+</div>
+
