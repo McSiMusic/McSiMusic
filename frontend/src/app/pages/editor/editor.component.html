@@ -16,6 +16,7 @@
         <div *ngSwitchCase="EditorStateEnum.ActionChoosen" class="action-container">
             <ng-container [ngSwitch]="action">
                 <app-get-bpm *ngSwitchCase="EditorActionEnum.GetBPM" [trackId]="currentTrack?._id"></app-get-bpm>
+                <app-trim *ngSwitchCase="EditorActionEnum.Trim" [trackId]="currentTrack?._id"></app-trim>
             </ng-container>
         </div>
     </ng-container>

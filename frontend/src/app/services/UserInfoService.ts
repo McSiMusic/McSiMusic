@@ -97,17 +97,28 @@ export class UserInfoService {
       );
   };
 
+  getTrack = (trackId: string) => {
+    return this._http.get(this._trackUrl, {
+      withCredentials: true,
+      params: { trackId },
+      observe: 'response',
+      responseType: 'blob',
+    });
+  };
+
+  getTrackAsArrayBuffer = (trackId: string) => {
+    return this._http.get(this._trackUrl, {
+      withCredentials: true,
+      params: { trackId },
+      observe: 'response',
+      responseType: 'arraybuffer',
+    });
+  };
+
   downloadTrack = (track: Track) => {
-    this._http
-      .get(this._trackUrl, {
-        withCredentials: true,
-        params: { trackId: track._id },
-        observe: 'response',
-        responseType: 'blob',
-      })
-      .subscribe((res) => {
-        downloadBlob(res.body!, `${track.name}.mp3`);
-      });
+    this.getTrack(track._id).subscribe((res) => {
+      downloadBlob(res.body!, `${track.name}.mp3`);
+    });
   };
 
   deleteTrack = (track: Track) => {

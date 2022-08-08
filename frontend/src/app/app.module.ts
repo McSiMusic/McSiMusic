@@ -41,6 +41,7 @@ import { CloseIconComponent } from './icons/close-icon/close-icon.component';
 import { TrackDialogComponent } from './pages/editor/components/track-dialog/app-track-dialog.component';
 import { GetBpmComponent } from './pages/editor/components/get-bpm/get-bpm.component';
 import { ActionDropdownComponent } from './pages/editor/components/no-action/action-dropdown.component';
+import { TrimComponent } from './pages/editor/components/trim/trim.component';
 
 @NgModule({
   declarations: [
@@ -81,6 +82,7 @@ import { ActionDropdownComponent } from './pages/editor/components/no-action/act
     TrackDialogComponent,
     ActionDropdownComponent,
     GetBpmComponent,
+    TrimComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],

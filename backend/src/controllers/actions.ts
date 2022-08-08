@@ -5,6 +5,7 @@ import { COOKIE_NAME } from "../auth/auth";
 import { config } from "dotenv";
 import { oauth2_v2 } from "googleapis";
 import { getBpm } from "./bpm";
+import { createAudioWaveForm } from "../services/canvasCreator";
 const conf = config().parsed;
 
 export const initActionsController = (express: Express) => {
@@ -18,5 +19,15 @@ export const initActionsController = (express: Express) => {
     const track = (await Track.findById(trackId))?.track;
 
     res.send(await getBpm(track!));
+  });
+
+  express.get("/waveform", async (req, res) => {
+    const userInfo = jwt.verify(
+      req.cookies[COOKIE_NAME],
+      conf?.JWT_SECRET || "SECRET"
+    ) as oauth2_v2.Schema$Userinfo;
+
+    const stream = await createAudioWaveForm(req.query.trackId?.toString()!);
+    stream.pipe(res);
   });
 };
