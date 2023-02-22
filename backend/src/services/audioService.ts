@@ -1,19 +1,25 @@
-const decode = require("audio-decode");
+import { Asset } from "av";
+require("mp3");
 
-export const getChannelDataFromBuffer = async (data: Buffer) => {
-  const audioData = await decode(data);
-  var channelData = [];
-  // Take the average of the two channels
-  if (audioData.numberOfChannels == 2) {
-    var channel1Data = audioData.getChannelData(0);
-    var channel2Data = audioData.getChannelData(1);
-    var length = channel1Data.length;
-    for (var i = 0; i < length; i++) {
-      channelData[i] = (channel1Data[i] + channel2Data[i]) / 2;
-    }
-  } else {
-    channelData = audioData.getChannelData(0);
-  }
+export const getChannelDataFromBuffer = async (data: Buffer): Promise<number[][]> => {
+  const bufferResult = await new Promise<{ audioBuffer: Float32Array, channels?: number}>((resolve, reject) => {
+    const asset = Asset.fromBuffer(data)
+    asset.on('error', err => {
+      console.error(err);
+			reject(err)
+		})
 
-  return channelData;
+    asset.decodeToBuffer((buffer) => {
+      if (asset.format == null) {
+        return reject("Unknown format")
+      }
+      resolve({ audioBuffer: buffer, channels: asset.format?.channelsPerFrame })
+    });
+  })
+ 
+  const channelCount = bufferResult.channels || 1;
+  const result: number[][] = Array(channelCount).fill([]);
+  bufferResult.audioBuffer.forEach((value, i) => result[i % channelCount].push(value));
+
+  return result
 };
