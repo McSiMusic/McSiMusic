@@ -101,5 +101,9 @@
     .control {        
         display: flex;
         cursor: pointer;
+
+        &.prev {
+            transform: scaleX(-1);
+        }
     }
 }

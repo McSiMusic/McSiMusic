@@ -74,9 +74,13 @@ export class PlayerService {
 
     const seek = (this._currentSound.duration() * percent) / 100;
 
-    this._currentSound.pause(); // HACK
-    this._currentSound.seek(seek);
-    this._currentSound.play(); // HACK
+    if (this._currentSound.playing()) {
+      this._currentSound.pause(); // HACK
+      this._currentSound.seek(seek);
+      this._currentSound.play(); // HACK
+    } else {
+      this._currentSound.seek(seek);
+    }
   }
 
   private _listenLoading = () => {

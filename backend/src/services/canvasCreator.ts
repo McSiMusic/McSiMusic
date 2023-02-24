@@ -34,7 +34,7 @@ export const createAudioWaveForm = async (trackId: string) => {
   context.beginPath();
 
   filteredData.forEach((v, i) => {
-    const value = Math.max(v / 2 * waveHeight, 2);
+    const value = Math.max(v / 2 * waveHeight, 1);
     context?.moveTo(i, waveHeight + value);
     context?.lineTo(i, waveHeight - value);
   });
