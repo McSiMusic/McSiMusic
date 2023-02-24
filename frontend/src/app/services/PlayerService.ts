@@ -3,7 +3,7 @@ import { environment } from 'src/environments/environment';
 import { Track } from './types';
 import { Howl } from 'howler';
 
-const PLAYING_INTERVAL = 500;
+const PLAYING_INTERVAL = 10;
 @Injectable({ providedIn: 'root' })
 export class PlayerService {
   constructor() {}
@@ -116,8 +116,9 @@ export class PlayerService {
     return this._sounds.get(track._id)!;
   };
 
-  isCurrentTrack(track: Track) {
-    return this._currentTrack?._id === track._id;
+  isCurrentTrack(track: Track | string) {
+    const trackId = typeof track === "string" ? track : track._id;
+    return this._currentTrack?._id === trackId;
   }
 
   isPlaying = () => {
@@ -150,7 +151,7 @@ export class PlayerService {
     if (this._currentSound === undefined) return;
 
     const progress =
-      (this._currentSound.seek() / this._currentSound.duration()) * 100;
+      ((this._currentSound.seek() + 0.1) / this._currentSound.duration()) * 100;
 
     this.onPlaying.emit(progress);
   };

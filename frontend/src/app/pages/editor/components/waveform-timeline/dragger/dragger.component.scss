@@ -1,0 +1,39 @@
+@import "src/styles";
+$draggerCircleSize: 15px;
+
+.dragger-container {
+    height: 100%;    
+
+    &.primary > * {
+        background-color: $primaryColor;
+    }
+
+    &.secondary > * {
+        background-color: $textColor;
+    }
+
+
+    .upper-round, .lower-round {
+        width: $draggerCircleSize;
+        height: $draggerCircleSize;
+        border-radius: 50%;    
+        left: -$draggerCircleSize / 2;
+        position: relative;
+    }
+
+    .upper-round {
+        top: -$draggerCircleSize / 2;
+    }
+
+    .lower-round {
+        bottom: $draggerCircleSize * 1.5;
+    }
+
+    .line {
+        position: relative;
+        top: -$draggerCircleSize;
+        height: 100%;
+        width: 3px;
+        left: -1.5px;
+    }
+}

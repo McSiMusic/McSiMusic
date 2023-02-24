@@ -15,6 +15,7 @@
             max-width: 1200px;
             width: 100%;
             position: relative;
+            
 
             img {
                 width: 100%;
@@ -25,11 +26,19 @@
                 position: absolute;
                 height: 100%;
             }
+
+            .selection {
+                height: 100%;
+                background-color: $primaryColor;
+                opacity: 0.2;
+                position: absolute;
+            }
         }
 
         .zoom-controls {
             width: 100%;
             margin-top: 16px;
+            margin-bottom: 42px;
             color: $textColor;
             display: flex;
             flex-direction: row;
@@ -53,21 +62,44 @@
                 }
             }
 
+            .control {
+                width: 24px;
+                height: 24px;
+
+                ::ng-deep * {
+                    stroke: $textColor;
+                }
+        
+                &:hover::ng-deep * {
+                    stroke: $primaryColor;
+                }
+            }
         }
     }
 
-    .control {
-        width: 24px;
-        height: 24px;
+    .player-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+
+        .control {
+            width: 48px;
+            height: 48px;
+            margin: 0 16px;
+
+            ::ng-deep * {
+                fill: $textColor;
+            }
+    
+            &:hover::ng-deep * {
+                fill: $primaryColor;
+            }
+        }
+    }
+
+    .control {        
         display: flex;
         cursor: pointer;
-
-        ::ng-deep * {
-            stroke: $textColor;
-        }
-
-        &:hover::ng-deep * {
-            stroke: $primaryColor;
-        }
     }
 }
