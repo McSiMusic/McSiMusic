@@ -1,3 +1,3 @@
-<canvas #canvas width="1280" height="200"></canvas>
-<app-preloader *ngIf="loading"></app-preloader>
-<img width="1200" height="200" [src]="waveform" />
+<div class="waveform-container">
+    <app-waveform-timeline [trackId]="trackId"></app-waveform-timeline>
+</div>

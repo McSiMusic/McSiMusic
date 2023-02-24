@@ -51,6 +51,18 @@ export const initTrackController = (express: Express) => {
     res.send(track?.track);
   });
 
+  express.get("/track/metadata", async (req, res) => {
+    jwt.verify(
+      req.cookies[COOKIE_NAME],
+      conf?.JWT_SECRET || "SECRET"
+    ) as oauth2_v2.Schema$Userinfo;
+
+    const trackId = req.query.trackId;
+    const track = await Track.findById(trackId).select({ track: 0 });
+
+    res.send(track);
+  });
+
   express.post("/tracks", multer().array("files"), async (req, res) => {
     const folder = req.query.folder;
     if (folder === undefined) {

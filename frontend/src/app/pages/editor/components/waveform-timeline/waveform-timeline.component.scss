@@ -1,0 +1,73 @@
+@import "src/styles";
+
+:host {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+
+    .container {
+        display: flex;
+        flex-direction: column;
+
+        .waveform-container {
+            display: flex;
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+
+            img {
+                width: 100%;
+                border: solid 1px $borderColor;
+            }
+
+            app-dragger {
+                position: absolute;
+                height: 100%;
+            }
+        }
+
+        .zoom-controls {
+            width: 100%;
+            margin-top: 16px;
+            color: $textColor;
+            display: flex;
+            flex-direction: row;
+
+            .left-duration, .right-duration {
+                flex: 1;
+            }
+
+            .right-duration {
+                text-align: end;
+            }
+
+            .zoom {
+                border: solid 1px $borderColor;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                > * {
+                    padding: 12px;
+                }
+            }
+
+        }
+    }
+
+    .control {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        cursor: pointer;
+
+        ::ng-deep * {
+            stroke: $textColor;
+        }
+
+        &:hover::ng-deep * {
+            stroke: $primaryColor;
+        }
+    }
+}

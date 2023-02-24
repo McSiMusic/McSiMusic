@@ -1,0 +1,21 @@
+<div class="container">
+    <div class="waveform-container">
+        <img [src]="waveform" />
+        <app-dragger [isPrimary]="false"></app-dragger>
+    </div>
+    <div class="zoom-controls">
+        <div class="left-duration">
+            {{ leftDuration }}
+        </div>
+        <div class="zoom">
+            <app-zoomout-icon class="control"></app-zoomout-icon>
+            <div class="percent-caption">{{ zoomPercent + '%' }}</div>
+            <app-zoomin-icon class="control"></app-zoomin-icon>
+        </div>
+        <div class="right-duration">
+            {{ rightDuration }}
+        </div>
+    </div>
+    
+    <app-preloader *ngIf="loading"></app-preloader>
+</div>

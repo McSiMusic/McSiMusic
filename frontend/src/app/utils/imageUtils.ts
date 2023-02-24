@@ -1,11 +1,10 @@
-export const createImageFromBlob = (image: Blob) => {
+import { combineLatest, fromEvent, map, Observable, of, tap } from "rxjs";
+
+export const createImageFromBlob = (image: Blob): Observable<string> => {
   let reader = new FileReader();
 
-  return new Promise((resolve) => {
-    reader.addEventListener('load', () => resolve(reader.result), false);
-
-    if (image) {
-      reader.readAsDataURL(image);
-    }
-  });
+  return combineLatest([fromEvent(reader, "load", { capture: false }), of(reader.readAsDataURL(image))]).pipe(
+    map(() => reader.result as string)
+  )
+  .pipe(tap(() => reader.readAsDataURL(image)))
 };

@@ -12,6 +12,7 @@ export class UserInfoService {
   private _tracksUrl = `${environment.backUrl}/tracks`;
   private _folderUrl = `${environment.backUrl}/folder`;
   private _trackUrl = `${environment.backUrl}/track`;
+  private _trackUrlMetadata = `${environment.backUrl}/track/metadata`;
   currentFolder = new BehaviorSubject<string | null>(null);
 
   constructor(private _http: HttpClient) {}
@@ -106,14 +107,13 @@ export class UserInfoService {
     });
   };
 
-  getTrackAsArrayBuffer = (trackId: string) => {
-    return this._http.get(this._trackUrl, {
+  getTrackMeta = (trackId: string) => {
+    return this._http.get<Track>(this._trackUrlMetadata, {
       withCredentials: true,
       params: { trackId },
-      observe: 'response',
-      responseType: 'arraybuffer',
     });
-  };
+  }
+
 
   downloadTrack = (track: Track) => {
     this.getTrack(track._id).subscribe((res) => {

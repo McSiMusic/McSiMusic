@@ -1,8 +1,9 @@
 :host {
-    position: relative;
+    height: 100%;
+    width: 100%;
 
-    app-preloader {
-        position: absolute;
-        top: 0
+    .waveform-container {
+        margin-top: 30px;
+        padding: 0 24px;
     }
 }

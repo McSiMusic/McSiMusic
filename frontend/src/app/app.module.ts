@@ -42,6 +42,10 @@ import { TrackDialogComponent } from './pages/editor/components/track-dialog/app
 import { GetBpmComponent } from './pages/editor/components/get-bpm/get-bpm.component';
 import { ActionDropdownComponent } from './pages/editor/components/no-action/action-dropdown.component';
 import { TrimComponent } from './pages/editor/components/trim/trim.component';
+import { WaveformTimelineComponent } from './pages/editor/components/waveform-timeline/waveform-timeline.component';
+import { ZoominIconComponent } from './icons/zoomin-icon/zoomin-icon.component';
+import { ZoomoutIconComponent } from './icons/zoomout-icon/zoomout-icon.component';
+import { DraggerComponent } from './pages/editor/components/waveform-timeline/dragger/dragger.component';
 
 @NgModule({
   declarations: [
@@ -83,6 +87,10 @@ import { TrimComponent } from './pages/editor/components/trim/trim.component';
     ActionDropdownComponent,
     GetBpmComponent,
     TrimComponent,
+    WaveformTimelineComponent,
+    ZoominIconComponent,
+    ZoomoutIconComponent,
+    DraggerComponent
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],

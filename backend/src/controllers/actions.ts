@@ -10,7 +10,7 @@ const conf = config().parsed;
 
 export const initActionsController = (express: Express) => {
   express.get("/bpm", async (req, res) => {
-    const userInfo = jwt.verify(
+    jwt.verify(
       req.cookies[COOKIE_NAME],
       conf?.JWT_SECRET || "SECRET"
     ) as oauth2_v2.Schema$Userinfo;
@@ -22,7 +22,7 @@ export const initActionsController = (express: Express) => {
   });
 
   express.get("/waveform", async (req, res) => {
-    const userInfo = jwt.verify(
+    jwt.verify(
       req.cookies[COOKIE_NAME],
       conf?.JWT_SECRET || "SECRET"
     ) as oauth2_v2.Schema$Userinfo;

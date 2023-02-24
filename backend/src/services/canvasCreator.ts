@@ -11,8 +11,8 @@ export const createAudioWaveForm = async (trackId: string) => {
   let channelData = await getChannelDataFromBuffer(track.track!);
 
   const width = 1200;
-  const height = 200;
-  const canvas = createCanvas(1200, 200);
+  const height = 256;
+  const canvas = createCanvas(width, height);
   const waveHeight = height / 2;
   const length = channelData[0].length;
   
