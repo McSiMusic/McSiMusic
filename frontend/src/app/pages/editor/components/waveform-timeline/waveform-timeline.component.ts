@@ -1,16 +1,18 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { uniq } from 'lodash';
-import { combineLatest, filter, from, fromEvent, map, mergeMap, skipUntil, skipWhile, switchMap, takeUntil, tap } from 'rxjs';
+import { combineLatest, filter, fromEvent, map, merge, mergeMap, scan, Subject, takeUntil, takeWhile, tap } from 'rxjs';
 import { ActionsService } from 'src/app/services/ActionsService';
 import { PlayerService } from 'src/app/services/PlayerService';
 import { Track } from 'src/app/services/types';
 import { UserInfoService } from 'src/app/services/UserInfoService';
 import { sToTime } from 'src/app/utils/durtaionConvertor';
 import { createImageFromBlob } from 'src/app/utils/imageUtils';
-import { isInRange, Range } from 'src/app/utils/rangeUtils';
+import { Range } from 'src/app/utils/rangeUtils';
 
 const PERCENT_CLICK_THRESHOLD = 3;
+type PointerAction = "move" | "click";
+interface InternalPointerEvent { initial: number, current: number, action?: PointerAction }
 
 @Component({
   selector: 'app-waveform-timeline',
@@ -56,7 +58,8 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
   waveform?: string;
   trackMeta?: Track;
   draggerPosition = 0;
-  selection?: Range;//; = { start: 20, end: 80 };
+  selection?: Range;
+  destroySubject = new Subject();
 
   ngAfterViewInit() {
     if (this.dragger === undefined || this.waveFormContainer === undefined)
@@ -67,9 +70,7 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
       this.draggerPosition = value.current;
     }, this.dragger.nativeElement);
 
-    this._subscribeToPointerEvents(({ initial, current }) => {
-      console.log("MOVE");
-
+    this._subscribeToPointerEvents(({ initial, current, action }) => {
       this.selection = {
         start: initial,
         end: current
@@ -79,7 +80,6 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
     fromEvent(this.waveFormContainer.nativeElement, "click").pipe(
       map((e: Event) => this._getPercentFromPointerEvent(e as PointerEvent))
     ).subscribe(value => {
-      console.log("CLICK");
       if (!this.selection) {
         this.draggerPosition = value;
       }
@@ -87,7 +87,7 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   private _subscribeToPointerEvents = (
-    callback: (value: { initial: number, current: number }) => void, 
+    callback: (value: InternalPointerEvent) => void, 
     element?: HTMLElement
   ) => {
     if (element === undefined)
@@ -98,14 +98,32 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
     const pointerUp$ = fromEvent(document, 'pointerup');
 
     pointerDown$.pipe(
-      mergeMap(pointerDownEvent => pointerMove$.pipe(
+      mergeMap(pointerDownEvent => merge(pointerMove$, pointerUp$).pipe(
         tap(e => e.preventDefault()),
+        takeWhile(e => e.type !== "pointerup", true),
         map(e => ({
           initial: this._getPercentFromPointerEvent(pointerDownEvent as PointerEvent),
-          current: this._getPercentFromPointerEvent(e as PointerEvent)
+          current: this._getPercentFromPointerEvent(e as PointerEvent),
+          type: e.type
         })),
-        skipWhile(({ initial, current }) => Math.abs(initial - current) > PERCENT_CLICK_THRESHOLD),
-        takeUntil(pointerUp$)))
+        scan<InternalPointerEvent & { type: string }, InternalPointerEvent>((acc: InternalPointerEvent, { initial, current, type }) => {
+          let newAction: PointerAction | undefined = acc.action;
+          if (newAction !== "move" && Math.abs(initial - current) > PERCENT_CLICK_THRESHOLD) {
+            newAction = "move";
+          }
+
+          if (type === "pointerup" && newAction === undefined) {
+            newAction = "click";
+          }
+          
+          return {
+            initial: initial,
+            current: current,
+            action: newAction,
+          }
+        }),
+        filter(v => v.action !== undefined))),
+        takeUntil(this.destroySubject)
     ).subscribe(callback)
   }
 
@@ -196,6 +214,8 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   ngOnDestroy(): void {
+    this.destroySubject.next(null);
+    this.destroySubject.complete();
     this._playerService.onPlaying.unsubscribe()
   }
 }
