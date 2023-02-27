@@ -1,11 +1,15 @@
 <div class="container">
     <div class="waveform-container" #waveFormContainer>
         <img [src]="waveform" />
-        <app-dragger [isPrimary]="false" style.left="{{draggerPosition + '%'}}" #dragger></app-dragger>
+        <app-dragger [isPrimary]="false" style.left="{{draggerPosition + '%'}}" #dragger
+            [isGrabbing]="isDraggerGrabbing"></app-dragger>
         <ng-container *ngIf="selection">
-            <div class="selection" style.left="{{selection.start + '%'}}" style.width="{{ selection.end - selection.start + '%'}}"></div>
-            <app-dragger [isPrimary]="true" style.left="{{selection.start + '%'}}" #startDragger></app-dragger>
-            <app-dragger [isPrimary]="true" style.left="{{selection.end + '%'}}" #endDragger></app-dragger>
+            <div class="selection" style.left="{{selection.start + '%'}}"
+                style.width="{{ selection.end - selection.start + '%'}}"></div>
+            <app-dragger [isPrimary]="true" style.left="{{selection.start + '%'}}" #startDragger
+                [isGrabbing]="isDraggerGrabbing"></app-dragger>
+            <app-dragger [isPrimary]="true" style.left="{{selection.end + '%'}}" #endDragger
+                [isGrabbing]="isDraggerGrabbing"></app-dragger>
         </ng-container>
     </div>
     <div class="zoom-controls">
@@ -27,6 +31,6 @@
         <app-pause-icon class="control" *ngIf="isPlaying()" (click)="playOrPause()"></app-pause-icon>
         <app-next-icon class="control" (click)="rewindForward()"></app-next-icon>
     </div>
-    
+
     <app-preloader *ngIf="loading"></app-preloader>
 </div>

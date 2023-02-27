@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
-import { uniq } from 'lodash';
+import { clamp, uniq } from 'lodash';
 import { combineLatest, filter, fromEvent, map, merge, mergeMap, scan, Subject, takeUntil, takeWhile, tap } from 'rxjs';
 import { ActionsService } from 'src/app/services/ActionsService';
 import { PlayerService } from 'src/app/services/PlayerService';
@@ -8,11 +8,12 @@ import { Track } from 'src/app/services/types';
 import { UserInfoService } from 'src/app/services/UserInfoService';
 import { sToTime } from 'src/app/utils/durtaionConvertor';
 import { createImageFromBlob } from 'src/app/utils/imageUtils';
-import { Range } from 'src/app/utils/rangeUtils';
+import { addToRange, intersection, isInRange, Range } from 'src/app/utils/rangeUtils';
 
 const PERCENT_CLICK_THRESHOLD = 3;
-type PointerAction = "move" | "click";
+type PointerAction = "move" | "click" | "moved";
 interface InternalPointerEvent { initial: number, current: number, action?: PointerAction }
+const fullRange = { start: 0, end: 100 }
 
 @Component({
   selector: 'app-waveform-timeline',
@@ -20,7 +21,7 @@ interface InternalPointerEvent { initial: number, current: number, action?: Poin
   styleUrls: ['./waveform-timeline.component.scss']
 })
 export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewInit {
-
+  
   constructor(private _userInfoService: UserInfoService,
     private _playerService: PlayerService,
     private _actionsService: ActionsService,
@@ -28,32 +29,36 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
     this._playerService.onPlaying.subscribe(this._onPlaying)
   }
 
+  isDraggerGrabbing = false;
   @Input() trackId?: string;
   @ViewChild('dragger', { read: ElementRef }) dragger?: ElementRef<HTMLDivElement>;
   @ViewChild('startDragger', { read: ElementRef }) set startDragger(element: ElementRef<HTMLDivElement>) {
     if (element === undefined)
       return;
 
-    this._subscribeToPointerEvents(value => {
+    /* this._subscribeToPointerEvents(value => {
+      this.isDraggerGrabbing = value.action === "move";
       if (this.selection !== undefined) {
         this.selection.start = value.current;
       }
-    }, element.nativeElement);
+    }, element.nativeElement); */
   }
 
   @ViewChild('endDragger', { read: ElementRef }) set endDragger(element: ElementRef<HTMLDivElement>) {
     if (element === undefined)
       return;
 
-    this._subscribeToPointerEvents(value => {
+    /* this._subscribeToPointerEvents(value => {
+      this.isDraggerGrabbing = value.action === "move";
       if (this.selection !== undefined) {
         this.selection.end = value.current;
       }
-    }, element.nativeElement);
+    }, element.nativeElement); */
   }
 
   @ViewChild('waveFormContainer', { read: ElementRef }) waveFormContainer?: ElementRef<HTMLDivElement>;
 
+  private _lastSelectionMove?: number = undefined;
   loading = false;
   waveform?: string;
   trackMeta?: Track;
@@ -65,25 +70,27 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
     if (this.dragger === undefined || this.waveFormContainer === undefined)
       return;
 
-    this._subscribeToPointerEvents(value => {
+    /* this._subscribeToPointerEvents(value => {
+      this.isDraggerGrabbing = value.action === "move";
       this._playerService.seek(value.current);
       this.draggerPosition = value.current;
-    }, this.dragger.nativeElement);
+    }, this.dragger.nativeElement); */
 
     this._subscribeToPointerEvents(({ initial, current, action }) => {
-      this.selection = {
-        start: initial,
-        end: current
+      if (action !== "click") {
+        if (this.selection !== undefined && isInRange(clamp(current, 0, 100), this.selection, true)) {
+          const diff = current - (this._lastSelectionMove || initial);
+          this.selection = addToRange(this.selection, diff, fullRange)
+          this._lastSelectionMove = current;
+        } else {
+          this.selection = intersection({ start: initial, end: current }, fullRange) || undefined;
+        }
+
+        if (action === "moved") {
+          this._lastSelectionMove = undefined;
+        }
       }
     }, this.waveFormContainer.nativeElement);
-
-    fromEvent(this.waveFormContainer.nativeElement, "click").pipe(
-      map((e: Event) => this._getPercentFromPointerEvent(e as PointerEvent))
-    ).subscribe(value => {
-      if (!this.selection) {
-        this.draggerPosition = value;
-      }
-    });
   }
 
   private _subscribeToPointerEvents = (
@@ -99,7 +106,7 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
 
     pointerDown$.pipe(
       mergeMap(pointerDownEvent => merge(pointerMove$, pointerUp$).pipe(
-        tap(e => e.preventDefault()),
+        tap(e => { e.preventDefault(); e.stopPropagation(); }),
         takeWhile(e => e.type !== "pointerup", true),
         map(e => ({
           initial: this._getPercentFromPointerEvent(pointerDownEvent as PointerEvent),
@@ -112,8 +119,8 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
             newAction = "move";
           }
 
-          if (type === "pointerup" && newAction === undefined) {
-            newAction = "click";
+          if (type === "pointerup") {
+            newAction = newAction === undefined ? "click" : "moved";
           }
           
           return {
@@ -130,7 +137,7 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
   private _getPercentFromPointerEvent = (pointerEvent: MouseEvent) => {
     const waveFormContainerElement = this.waveFormContainer?.nativeElement;
     return waveFormContainerElement ?
-      ((pointerEvent.clientX - waveFormContainerElement.clientLeft) / waveFormContainerElement.offsetWidth) * 100
+      ((pointerEvent.clientX - waveFormContainerElement.offsetLeft) / waveFormContainerElement.offsetWidth) * 100
       : 0;
   }
 
