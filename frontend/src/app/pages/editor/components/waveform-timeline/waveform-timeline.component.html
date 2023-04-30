@@ -2,14 +2,16 @@
     <div class="waveform-container" #waveFormContainer>
         <img [src]="waveform" />
         <app-dragger [isPrimary]="false" style.left="{{draggerPosition + '%'}}" #dragger
-            [isGrabbing]="isDraggerGrabbing"></app-dragger>
+            [style.cursor]="draggerCursor"></app-dragger>
         <ng-container *ngIf="selection">
             <div class="selection" style.left="{{selection.start + '%'}}"
-                style.width="{{ selection.end - selection.start + '%'}}"></div>
+                style.width="{{ selection.end - selection.start + '%'}}"
+                style.cursor="{{ selectionMoving ? 'grabbing' : 'grab'}}"
+                [style.cursor]="selectionCursor"></div>
             <app-dragger [isPrimary]="true" style.left="{{selection.start + '%'}}" #startDragger
-                [isGrabbing]="isDraggerGrabbing"></app-dragger>
+                [style.cursor]="draggerCursor"></app-dragger>
             <app-dragger [isPrimary]="true" style.left="{{selection.end + '%'}}" #endDragger
-                [isGrabbing]="isDraggerGrabbing"></app-dragger>
+                [style.cursor]="draggerCursor"></app-dragger>
         </ng-container>
     </div>
     <div class="zoom-controls">

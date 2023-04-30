@@ -46,6 +46,7 @@ import { WaveformTimelineComponent } from './pages/editor/components/waveform-ti
 import { ZoominIconComponent } from './icons/zoomin-icon/zoomin-icon.component';
 import { ZoomoutIconComponent } from './icons/zoomout-icon/zoomout-icon.component';
 import { DraggerComponent } from './pages/editor/components/waveform-timeline/dragger/dragger.component';
+import { PointerDownStopPropagationDirective } from './directives/pointer-down-stop-propagation.directive';
 
 @NgModule({
   declarations: [
@@ -90,7 +91,8 @@ import { DraggerComponent } from './pages/editor/components/waveform-timeline/dr
     WaveformTimelineComponent,
     ZoominIconComponent,
     ZoomoutIconComponent,
-    DraggerComponent
+    DraggerComponent,
+    PointerDownStopPropagationDirective
   ],
   imports: [BrowserModule, AppRoutingModule, HttpClientModule, FormsModule],
   providers: [],

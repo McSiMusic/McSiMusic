@@ -7,7 +7,6 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class DraggerComponent implements OnInit {
   @Input() isPrimary = false;
-  @Input() isGrabbing = false;
 
   constructor() { }
 
