@@ -26,6 +26,9 @@ export const getNormalizedRange = (range: Range) => {
 }
 
 export const addToRange = (range: Range, add: number, limitingRange?: Range): Range => {
+    if (add === 0)
+        return range;
+
     const { start, end } = range;
 
     if (!limitingRange) return {
@@ -41,7 +44,7 @@ export const addToRange = (range: Range, add: number, limitingRange?: Range): Ra
     }      
 
     if (nStart + add < nlStart) {
-        add = nStart + add - nStart;
+        add = nlStart - nStart;
     } else if (nEnd + add > nlEnd) {
         add = nlEnd - nEnd;
     }

@@ -12,6 +12,7 @@ import { addToRange, intersection, isInRange, Range } from 'src/app/utils/rangeU
 
 const PERCENT_CLICK_THRESHOLD = 3;
 type PointerAction = "move" | "click" | "moved";
+type WaveformTimelineState = "idle" | "selection" | "selected" | "draggermoving" | "selectionmoving";
 interface InternalPointerEvent { initial: number, current: number, action?: PointerAction }
 const fullRange = { start: 0, end: 100 }
 
@@ -59,6 +60,7 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
   @ViewChild('waveFormContainer', { read: ElementRef }) waveFormContainer?: ElementRef<HTMLDivElement>;
 
   private _lastSelectionMove?: number = undefined;
+  private _currentState: WaveformTimelineState = "idle";
   loading = false;
   waveform?: string;
   trackMeta?: Track;
@@ -78,19 +80,32 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
 
     this._subscribeToPointerEvents(({ initial, current, action }) => {
       if (action !== "click") {
-        if (this.selection !== undefined && isInRange(clamp(current, 0, 100), this.selection, true)) {
+        if (this._isSelectionMoving(current)) {
+          this._currentState = 'selectionmoving';
           const diff = current - (this._lastSelectionMove || initial);
-          this.selection = addToRange(this.selection, diff, fullRange)
+          this.selection = addToRange(this.selection!, diff, fullRange)
           this._lastSelectionMove = current;
         } else {
+          this._currentState = "selection";
           this.selection = intersection({ start: initial, end: current }, fullRange) || undefined;
         }
 
         if (action === "moved") {
           this._lastSelectionMove = undefined;
+          this._currentState = "idle";
         }
       }
     }, this.waveFormContainer.nativeElement);
+  }
+
+  private _isSelectionMoving = (current: number) => {
+    if (this._currentState === 'selectionmoving')
+      return true;
+
+    if (!this.selection || this._currentState === 'selection')
+      return false;
+
+    return isInRange(clamp(current, 0, 100), this.selection, true)
   }
 
   private _subscribeToPointerEvents = (
