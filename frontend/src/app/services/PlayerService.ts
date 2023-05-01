@@ -154,8 +154,7 @@ export class PlayerService {
   private _onPlaying = () => {
     if (this._currentSound === undefined) return;
 
-    const progress =
-      ((this._currentSound.seek() + 0.1) / this._currentSound.duration()) * 100;
+    const progress = (this._currentSound.seek() / this._currentSound.duration()) * 100;
 
     this.onPlaying.emit(progress);
   };

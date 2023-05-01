@@ -22,7 +22,7 @@ export const createAudioWaveForm = async (trackId: string) => {
   for (let i = 0; i < length / bufferSize; i++) {
     const buffers = channelData.map(data => {
        const buffer = data.slice(i * bufferSize, (i + 1) * bufferSize);
-       return absMean(buffer) * 2
+       return squareMean(buffer) * 2
     });
 
 
