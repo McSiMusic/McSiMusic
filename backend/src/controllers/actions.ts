@@ -6,7 +6,8 @@ import { config } from "dotenv";
 import { oauth2_v2 } from "googleapis";
 import { getBpm } from "./bpm";
 import { createAudioWaveForm } from "../services/canvasCreator";
-const conf = config().parsed;
+config();
+const conf = process.env;
 
 export const initActionsController = (express: Express) => {
   express.get("/bpm", async (req, res) => {

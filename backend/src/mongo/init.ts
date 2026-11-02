@@ -1,7 +1,8 @@
 import { config } from "dotenv";
 import mongoose, { Schema } from "mongoose";
 
-const connectionString = config().parsed?.MONGO_CONNECTION_STRING!;
+config();
+const connectionString = process.env.MONGO_CONNECTION_STRING;
 const userSchema = new Schema({
   name: String,
   id: String,
@@ -26,8 +27,8 @@ export const Track = mongoose.model("Track", trackSchema, "Track");
 type TrackFileId = InstanceType<typeof mongoose.mongo.ObjectId>;
 
 export interface TrackAudio {
-  track?: Buffer;
-  trackFileId?: TrackFileId;
+  track?: Buffer | null;
+  trackFileId?: TrackFileId | null;
 }
 
 const getTrackBucket = () => {
@@ -67,7 +68,10 @@ export const deleteTrackAudio = (id: TrackFileId) =>
   getTrackBucket().delete(id);
 
 export const initMongo = async () => {
-  mongoose.connect(connectionString, { dbName: "McSiMusic" }).then(async () => {
-    console.log("mongodb connection established");
-  });
+  if (!connectionString) {
+    throw new Error("MONGO_CONNECTION_STRING is not configured");
+  }
+
+  await mongoose.connect(connectionString, { dbName: "McSiMusic" });
+  console.log("mongodb connection established");
 };

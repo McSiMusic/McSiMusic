@@ -1,11 +1,20 @@
-**Steps to canvas working**
+# Backend
 
-1) npm install -g node-gyp
-2) https://apps.microsoft.com/store/detail/python-310/9PJPW5LDXLZ5?hl=en-us&gl=us
-3) https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools (using the "Desktop development with C++" workload)
-4) Download https://ftp.gnome.org/pub/GNOME/binaries/win64/gtk+/2.22/gtk+-bundle_2.22.1-20101229_win64.zip and Unzip the contents in C:\GTK.
+## Requirements
 
-**Mongo**
+- Node.js 20.19 or newer (Node.js 24 LTS recommended)
+- MongoDB
+- Visual Studio Build Tools with the **Desktop development with C++** workload on Windows when a native dependency does not have a prebuilt binary
 
-1) Download https://www.mongodb.com/try/download/community and install
-2) Update MONGO_CONNECTION_STRING 
+## Install and configure
+
+Run `npm ci` in this directory. Create a local `.env` file with the MongoDB connection string, frontend origin, host, port, Google OAuth credentials, and JWT secret. Do not commit `.env`.
+
+## Run locally
+
+- `npm run dev` starts the TypeScript server with Node.js watch mode.
+- `npm run typecheck` checks TypeScript without generating files.
+- `npm run build` compiles the server to `dist/`.
+- `npm start` starts the compiled server.
+
+MongoDB must be available before the server starts. Audio uploads are stored in MongoDB GridFS.

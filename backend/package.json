@@ -2,9 +2,16 @@
   "name": "mcsimusic-be",
   "version": "0.0.0",
   "description": "McSiMusic back end",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
-    "run": "nodemon --inspect src/index.ts"
+    "start": "node dist/index.js",
+    "dev": "node --watch --inspect --require ts-node/register src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "run": "npm run dev"
   },
   "repository": {
     "type": "git",
@@ -20,41 +27,27 @@
   },
   "homepage": "https://github.com/McSiMusic/McSiMusic#readme",
   "dependencies": {
-    "@descript/web-audio-js": "^0.15.3-patched.5",
-    "av": "0.4.9",
-    "audio-decode": "^1.4.0",
-    "audio-buffer-from": "1.1.1",
-    "axios": "^0.27.2",
-    "body-parser": "^1.20.0",
-    "canvas": "^2.9.3",
-    "cookie-parser": "^1.4.6",
-    "cookieparser": "^0.1.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.0.1",
-    "express": "^4.18.1",
-    "googleapis": "^105.0.0",
-    "howler": "^2.2.3",
-    "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.4.6",
-    "multer": "^1.4.5-lts.1",
-    "music-metadata": "^7.12.5",
-    "music-tempo": "^1.0.3", 
-    "ndarray-fft": "1.0.3"
+    "@audio/decode": "^4.2.0",
+    "canvas": "^3.2.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "googleapis": "^189.0.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.11.4",
+    "multer": "^2.5.0",
+    "music-metadata": "^12.3.4",
+    "music-tempo": "^1.0.3"
   },
   "devDependencies": {
-    "@types/av":"0.4.1",
-    "@types/axios": "^0.14.0",
-    "@types/body-parser": "^1.19.2",
-    "@types/cookie-parser": "^1.4.3",
-    "@types/cors": "^2.8.12",
-    "@types/dotenv": "^8.2.0",
-    "@types/express": "^4.17.13",
-    "@types/howler": "^2.2.7",
-    "@types/jsonwebtoken": "^8.5.8",
-    "@types/multer": "^1.4.7",
-    "@types/node": "18.0.6",
-    "nodemon": "^2.0.19",
-    "ts-node": "^10.9.1",
-    "typescript": "^4.7.4"
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^2.3.0",
+    "@types/node": "^24.19.2",
+    "ts-node": "^10.9.2",
+    "typescript": "~6.0.3"
   }
 }

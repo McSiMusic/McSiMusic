@@ -6,7 +6,8 @@ import { User } from "../mongo/init";
 import jwt from "jsonwebtoken";
 
 export const COOKIE_NAME = "auth_token";
-const conf = config().parsed;
+config();
+const conf = process.env;
 const googlePath = "/auth/google";
 const redirectUrl = `http://${conf?.HOST}:${conf?.PORT}${googlePath}`;
 const oauth2Client = new google.auth.OAuth2(

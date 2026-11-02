@@ -10,16 +10,16 @@ import jwt from "jsonwebtoken";
 import { COOKIE_NAME } from "../auth/auth";
 import { config } from "dotenv";
 import { oauth2_v2 } from "googleapis";
-import { parseBuffer } from "music-metadata";
 import multer from "multer";
 import mongoose from "mongoose";
 import path from "path";
-const conf = config().parsed;
+config();
+const conf = process.env;
 
 export const initTrackController = (express: Express) => {
   express.get("/tracks", async (req, res) => {
-    const folder = req.query.folder;
-    const filter = req.query.filter || "";
+    const folder = req.query.folder?.toString();
+    const filter = req.query.filter?.toString() || "";
     const offset = parseInt(req.query.offset?.toString() || "0");
     const size = parseInt(req.query.size?.toString() || "10");
     const sort = req.query.sort?.toString() || "name";
@@ -49,7 +49,7 @@ export const initTrackController = (express: Express) => {
       conf?.JWT_SECRET || "SECRET"
     ) as oauth2_v2.Schema$Userinfo;
 
-    const trackId = req.query.trackId;
+    const trackId = req.query.trackId?.toString();
     const track = await Track.findById(trackId);
     if (!track) return res.sendStatus(404);
 
@@ -73,7 +73,7 @@ export const initTrackController = (express: Express) => {
       conf?.JWT_SECRET || "SECRET"
     ) as oauth2_v2.Schema$Userinfo;
 
-    const trackId = req.query.trackId;
+    const trackId = req.query.trackId?.toString();
     const track = await Track.findById(trackId).select({ track: 0 });
 
     res.send(track);
@@ -96,6 +96,7 @@ export const initTrackController = (express: Express) => {
     try {
       const result = [];
       for (const file of files) {
+        const { parseBuffer } = await import("music-metadata");
         const audioMeta = await parseBuffer(file.buffer);
         const name = Buffer.from(
           audioMeta.common.title || path.basename(file.originalname),
@@ -134,10 +135,10 @@ export const initTrackController = (express: Express) => {
       conf?.JWT_SECRET || "SECRET"
     ) as oauth2_v2.Schema$Userinfo;
 
-    const trackId = req.query.trackId;
+    const trackId = req.query.trackId?.toString();
     const track = await Track.findById(trackId);
     if (track?.trackFileId) await deleteTrackAudio(track.trackFileId);
-    if (track) await track.remove();
+    if (track) await track.deleteOne();
 
     res.send();
   });

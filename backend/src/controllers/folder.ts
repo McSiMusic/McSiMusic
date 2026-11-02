@@ -4,7 +4,8 @@ import jwt from "jsonwebtoken";
 import { COOKIE_NAME } from "../auth/auth";
 import { config } from "dotenv";
 import { oauth2_v2 } from "googleapis";
-const conf = config().parsed;
+config();
+const conf = process.env;
 
 export const initFolderController = (express: Express) => {
   express.post("/folder", async (req, res) => {
