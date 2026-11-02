@@ -1,47 +1,77 @@
-<app-search *ngIf="!isEmpty" (onChange)="onFilterValueChanged($event)"></app-search>
+@if (!isEmpty) {
+  <app-search (onChange)="onFilterValueChanged($event)"></app-search>
+}
 <div class="tracks-wrapper" (dragenter)="onMainDragEnter()" (dragover)="onMainDragOver($event)" (drop)="onMainDrop($event)">
-    <div class="tracks" *ngIf="!isLoading && !isEmpty" (click)="selectTrack()">
-        <div class="header-row row">
-            <div *ngFor="let descriptor of tableDescriptor" class="header-cell cell {{descriptor.cellClass}}"
-                [ngClass]="{ primary: descriptor.primary }" (click)="onSortClick(descriptor.key)">
-                <div class="header-cell-name">{{ descriptor.displayName }}</div>
-                <app-sort-icon [ngClass]="{ active: isActiveSort(descriptor.key), asc: isAsc() }"></app-sort-icon>
+  @if (!isLoading && !isEmpty) {
+    <div class="tracks" (click)="selectTrack()">
+      <div class="header-row row">
+        @for (descriptor of tableDescriptor; track descriptor) {
+          <div class="header-cell cell {{descriptor.cellClass}}"
+            [ngClass]="{ primary: descriptor.primary }" (click)="onSortClick(descriptor.key)">
+            <div class="header-cell-name">{{ descriptor.displayName }}</div>
+            <app-sort-icon [ngClass]="{ active: isActiveSort(descriptor.key), asc: isAsc() }"></app-sort-icon>
+          </div>
+        }
+        @if (actionEnabled()) {
+          <div class="header-cell cell action-row">Actions</div>
+        }
+      </div>
+      @for (track of (tracks$ | async); track trackBy(i, track); let i = $index) {
+        <div class="row" (dblclick)="onTrackDoubleClick(track)"
+          (click)="selectTrack(track)" [ngClass]="{ selected: isTrackSelected(track) }" click-stop-propagation>
+          @for (descriptor of tableDescriptor; track descriptor) {
+            <div class="cell {{descriptor.cellClass}}"
+              [ngClass]="{ primary: descriptor.primary }">
+              {{ getConvertedValue(track[descriptor.key], descriptor) }}
             </div>
-            <div class="header-cell cell action-row" *ngIf="actionEnabled">Actions</div>
+          }
+          @if (actionEnabled()) {
+            <div class="cell action-row" click-stop-propagation>
+              <app-download-icon class="control-icon" (click)="downloadTrack(track)"></app-download-icon>
+              <app-delete-icon class="control-icon" (click)="deleteTrack(track)"></app-delete-icon>
+            </div>
+          }
         </div>
-        <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row" (dblclick)="onTrackDoubleClick(track)"
-            (click)="selectTrack(track)" [ngClass]="{ selected: isTrackSelected(track) }" click-stop-propagation>
-            <div *ngFor="let descriptor of tableDescriptor" class="cell {{descriptor.cellClass}}"
-                [ngClass]="{ primary: descriptor.primary }">
-                {{ getConvertedValue(track[descriptor.key], descriptor) }}
-            </div>
-
-            <div class="cell action-row" click-stop-propagation *ngIf="actionEnabled">
-                <app-download-icon class="control-icon" (click)="downloadTrack(track)"></app-download-icon>
-                <app-delete-icon class="control-icon" (click)="deleteTrack(track)"></app-delete-icon>
-            </div>
-        </div>
+      }
     </div>
+  }
 
 
-    <div class="empty-message" *ngIf="!actionEnabled && isEmpty">
-        It's empty here...
+  @if (!actionEnabled() && isEmpty) {
+    <div class="empty-message">
+      It's empty here...
     </div>
+  }
 
-    <app-upload *ngIf="actionEnabled" [isDnd]="true" (onEnter)="onDndEnter()" (onLeave)="onDndLeave()" (onUpload)="onUpload($event)"
-        [ngClass]="{ visible: isEmpty, hover: dndState === 'Hover' }">
-        <div class="dnd-area" [ngClass]="{ hover: dndState === 'Hover' }">
-            <div *ngIf="isEmpty" class="dnd-label">Click or drag to upload</div>
-            <div *ngIf="isEmpty" class="dnd-ext">Only mp3 files are allowed</div>
-        </div>
+  @if (actionEnabled()) {
+    <app-upload [isDnd]="true" (onEnter)="onDndEnter()" (onLeave)="onDndLeave()" (onUpload)="onUpload($event)"
+      [ngClass]="{ visible: isEmpty, hover: dndState === 'Hover' }">
+      <div class="dnd-area" [ngClass]="{ hover: dndState === 'Hover' }">
+        @if (isEmpty) {
+          <div class="dnd-label">Click or drag to upload</div>
+        }
+        @if (isEmpty) {
+          <div class="dnd-ext">Only mp3 files are allowed</div>
+        }
+      </div>
     </app-upload>
+  }
 
-    <div #pageLoadingAnchor id="page-loading-anchor"></div>
-    <app-preloader-logo *ngIf='!isLoading && isPageLoading' class="page-loader" [size]="20"></app-preloader-logo>
+  <div #pageLoadingAnchor id="page-loading-anchor"></div>
+  @if (!isLoading && isPageLoading) {
+    <app-preloader-logo class="page-loader" [size]="20"></app-preloader-logo>
+  }
 </div>
-<app-preloader *ngIf='isLoading' [caption]="preloaderProgress"></app-preloader>
-<div class="tracks-action-panel" *ngIf="actionEnabled">
+@if (isLoading) {
+  <app-preloader [caption]="preloaderProgress"></app-preloader>
+}
+@if (uploadError) {
+  <div class="upload-error" role="alert">{{ uploadError }}</div>
+}
+@if (actionEnabled()) {
+  <div class="tracks-action-panel">
     <app-button (click)="downloadTrack()" [disabled]="currentTrack === undefined">Download</app-button>
     <app-button (click)="deleteTrack()" [disabled]="currentTrack === undefined">Delete</app-button>
     <app-upload (onUpload)="onUpload($event)">Upload</app-upload>
-</div>
+  </div>
+}

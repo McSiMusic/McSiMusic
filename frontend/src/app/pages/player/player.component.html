@@ -1,44 +1,60 @@
 <div class="header">
-    <app-dropdown [items]="folderDropdownItems" [selectedIndex]="0" [bordered]="false"
-        (onChange)="onFolderChange($event)"></app-dropdown>
+  <app-dropdown [items]="folderDropdownItems" [selectedIndex]="0" [bordered]="false"
+  (onChange)="onFolderChange($event)"></app-dropdown>
 </div>
 <div class="list">
-    <div class="tracks-wrapper">
-        <div class="tracks" *ngIf='!isLoading'>
-            <div *ngFor="let track of (tracks$ | async); let i = index; trackBy:trackBy" class="row"
-                (click)="playOrPause(track)" [ngClass]="{ current: isCurrentTrack(track) }">
-                <div class="controls cell">
-                    <app-play-icon class="control" *ngIf="!isCurrentTrackPlaying(track)"></app-play-icon>
-                    <app-pause-icon class="control" *ngIf="isCurrentTrackPlaying(track)"></app-pause-icon>
-                </div>
-                <div class="number cell">{{i + 1}}</div>
-                <div class="name cell">{{track.name}}</div>
-                <div class="duration cell">{{convertDuration(track.duration)}}</div>
+  <div class="tracks-wrapper">
+    @if (!isLoading) {
+      <div class="tracks">
+        @for (track of (tracks$ | async); track trackBy(i, track); let i = $index) {
+          <div class="row"
+            (click)="playOrPause(track)" [ngClass]="{ current: isCurrentTrack(track) }">
+            <div class="controls cell">
+              @if (!isCurrentTrackPlaying(track)) {
+                <app-play-icon class="control"></app-play-icon>
+              }
+              @if (isCurrentTrackPlaying(track)) {
+                <app-pause-icon class="control"></app-pause-icon>
+              }
             </div>
-        </div>
+            <div class="number cell">{{i + 1}}</div>
+            <div class="name cell">{{track.name}}</div>
+            <div class="duration cell">{{convertDuration(track.duration)}}</div>
+          </div>
+        }
+      </div>
+    }
 
-        <div #pageLoadingAnchor id="page-loading-anchor"></div>
-        <app-preloader-logo *ngIf='!isLoading && isPageLoading' class="page-loader" [size]="20"></app-preloader-logo>
-    </div>
+    <div #pageLoadingAnchor id="page-loading-anchor"></div>
+    @if (!isLoading && isPageLoading) {
+      <app-preloader-logo class="page-loader" [size]="20"></app-preloader-logo>
+    }
+  </div>
 
-    <app-preloader *ngIf='isLoading'></app-preloader>
+  @if (isLoading) {
+    <app-preloader></app-preloader>
+  }
 </div>
 <div class="control-panel">
-    <div class="timeline-wrapper">
-        <app-timeline></app-timeline>
+  <div class="timeline-wrapper">
+    <app-timeline></app-timeline>
+  </div>
+  <div class="bottom">
+    <div class="name">
+      {{currentTrackName}}
     </div>
-    <div class="bottom">
-        <div class="name">
-            {{currentTrackName}}
-        </div>
-        <div class="play-controls-wrapper">
-            <div class="play-controls">
-                <app-next-icon class="control prev" (click)="playPrev()"></app-next-icon>
-                <app-play-icon class="control" *ngIf="!isPlaying()" (click)="playOrPause()"></app-play-icon>
-                <app-pause-icon class="control" *ngIf="isPlaying()" (click)="playOrPause()"></app-pause-icon>
-                <app-next-icon class="control" (click)="playNext()"></app-next-icon>
-            </div>
-        </div>
-        <div></div>
+    <div class="play-controls-wrapper">
+      <div class="play-controls">
+        <app-next-icon class="control prev" (click)="playPrev()"></app-next-icon>
+        @if (!isPlaying()) {
+          <app-play-icon class="control" (click)="playOrPause()"></app-play-icon>
+        }
+        @if (isPlaying()) {
+          <app-pause-icon class="control" (click)="playOrPause()"></app-pause-icon>
+        }
+        <app-next-icon class="control" (click)="playNext()"></app-next-icon>
+      </div>
     </div>
+    <div></div>
+  </div>
 </div>

@@ -1,34 +1,44 @@
-<app-preloader *ngIf="foldersLoading"></app-preloader>
-<div class="folders-header" *ngIf="!foldersLoading">
+@if (foldersLoading) {
+  <app-preloader></app-preloader>
+}
+@if (!foldersLoading) {
+  <div class="folders-header">
     <div class="folders-caption">Folders</div>
-    <div class="folders-add control-icon" *ngIf="actionEnabled" (click)="createFolder()"></div>
-</div>
+    @if (actionEnabled()) {
+      <div class="folders-add control-icon" (click)="createFolder()"></div>
+    }
+  </div>
+}
 <div class="folders">
-    <div class="folder" *ngFor="let folder of folders"
-        [ngClass]="{ active: isCurrentFolder(folder), idle: isIdle(folder) }" (click)="onFolderClick(folder)">
-        <ng-container [ngSwitch]="folder.status">
-            <ng-container *ngSwitchCase="'Idle'">
-                <div class="folder-caption">{{ folder.name }}</div>
-                <app-delete-icon *ngIf="actionEnabled && isDeleteEnabled()" class="folder-delete control-icon"
-                    (click)="deleteFolder(folder)" click-stop-propagation></app-delete-icon>
-                <app-edit-icon *ngIf="actionEnabled" class="folder-delete control-icon" (click)="startEditFolder(folder)"
-                    click-stop-propagation></app-edit-icon>
-            </ng-container>
-
-            <ng-container *ngSwitchCase="'Loading'">
-                <div class="folder-caption">{{ folder.name }}</div>
-                <div class="folder-overflow"></div>
-            </ng-container>
-
-            <ng-container *ngSwitchDefault>
-                <app-input class="folder-input" [initialValue]="folder.name" [autoFocus]="true"
-                    (onBlur)="onBlur($event, folder)" [validator]="validate">
-                </app-input>
-                <app-delete-icon class="folder-cancel control-icon" (click)="cancelEditFolder(folder)"
-                    click-stop-propagation></app-delete-icon>
-                <app-apply-icon class="folder-apply control-icon" (click)="applyEditFolder(folder)"
-                    click-stop-propagation></app-apply-icon>
-            </ng-container>
-        </ng-container>
+  @for (folder of folders; track folder) {
+    <div class="folder"
+      [ngClass]="{ active: isCurrentFolder(folder), idle: isIdle(folder) }" (click)="onFolderClick(folder)">
+      @switch (folder.status) {
+        @case ('Idle') {
+          <div class="folder-caption">{{ folder.name }}</div>
+          @if (actionEnabled() && isDeleteEnabled()) {
+            <app-delete-icon class="folder-delete control-icon"
+            (click)="deleteFolder(folder)" click-stop-propagation></app-delete-icon>
+          }
+          @if (actionEnabled()) {
+            <app-edit-icon class="folder-delete control-icon" (click)="startEditFolder(folder)"
+            click-stop-propagation></app-edit-icon>
+          }
+        }
+        @case ('Loading') {
+          <div class="folder-caption">{{ folder.name }}</div>
+          <div class="folder-overflow"></div>
+        }
+        @default {
+          <app-input class="folder-input" [initialValue]="folder.name" [autoFocus]="true"
+            (onBlur)="onBlur($event, folder)" [validator]="validate">
+          </app-input>
+          <app-delete-icon class="folder-cancel control-icon" (click)="cancelEditFolder(folder)"
+          click-stop-propagation></app-delete-icon>
+          <app-apply-icon class="folder-apply control-icon" (click)="applyEditFolder(folder)"
+          click-stop-propagation></app-apply-icon>
+        }
+      }
     </div>
+  }
 </div>

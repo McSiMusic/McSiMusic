@@ -4,32 +4,35 @@ import {
   Component,
   ElementRef,
   HostListener,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
+  ChangeDetectionStrategy,
+  input,
+  viewChild,
+  output
 } from '@angular/core';
 import { MenuItem } from '../types';
 import { dropdownTopMargin } from './consts';
-import { EventEmitter } from '@angular/core';
+
+import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'app-menu-content',
-  templateUrl: './menu-content.component.html',
-  styleUrls: ['./menu-content.component.scss'],
+    selector: 'app-menu-content',
+    templateUrl: './menu-content.component.html',
+    styleUrls: ['./menu-content.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [NgClass]
 })
-export class MenuContentComponent implements OnInit, AfterViewChecked {
-  @Input() elements: MenuItem[] = [];
-  @Input() hostElement: ElementRef<HTMLElement> | null = null;
-  @Input() selectedIndex?: number;
-  @ViewChild('content') content: ElementRef<HTMLElement> | null = null;
-  @Output() onOutsideClick = new EventEmitter();
+export class MenuContentComponent implements AfterViewChecked {
+  readonly elements = input<MenuItem[]>([]);
+  readonly hostElement = input<ElementRef<HTMLElement> | null>(null);
+  readonly selectedIndex = input<number>();
+  readonly content = viewChild<ElementRef<HTMLElement>>('content');
+  readonly onOutsideClick = output();
 
   @HostListener('document:click', ['$event.target'])
   onPublicClick = (targetElement: HTMLElement) => {
     const clickedInside =
-      this.content?.nativeElement.contains(targetElement) ||
-      this.hostElement?.nativeElement.contains(targetElement);
+      this.content()?.nativeElement.contains(targetElement) ||
+      this.hostElement()?.nativeElement.contains(targetElement);
 
     if (!clickedInside) {
       this.onOutsideClick.emit();
@@ -46,10 +49,12 @@ export class MenuContentComponent implements OnInit, AfterViewChecked {
   }
 
   private _changePosition() {
-    if (this.hostElement === null || this.content === null) return;
+    const hostElement = this.hostElement();
+    const content = this.content();
+    if (hostElement === null || content === undefined) return;
 
-    const clientRect = this.hostElement.nativeElement.getBoundingClientRect();
-    const contentRect = this.content.nativeElement.getBoundingClientRect();
+    const clientRect = hostElement.nativeElement.getBoundingClientRect();
+    const contentRect = content.nativeElement.getBoundingClientRect();
 
     this.left = `${
       clientRect.left + clientRect.width / 2 - contentRect.width / 2
@@ -58,6 +63,4 @@ export class MenuContentComponent implements OnInit, AfterViewChecked {
 
     this._cdRef.detectChanges();
   }
-
-  ngOnInit(): void {}
 }

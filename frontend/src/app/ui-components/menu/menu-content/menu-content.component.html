@@ -1,6 +1,8 @@
 <div id='dropdown-content' [style.left]='left' [style.top]='top' #content>
-    <div *ngFor="let element of elements; let i = index;" class="menu-item" (click)="element.action()"
-        [ngClass]="{ selected: i === selectedIndex }">
-        {{element.name}}
+  @for (element of elements(); track element; let i = $index) {
+    <div class="menu-item" (click)="element.action()"
+      [ngClass]="{ selected: i === selectedIndex() }">
+      {{element.name}}
     </div>
+  }
 </div>

@@ -1,31 +1,36 @@
 import {
   Component,
   ElementRef,
-  EventEmitter,
-  Input,
   OnInit,
-  Output,
-  ViewChild,
+  ChangeDetectionStrategy,
+  input,
+  output,
+  viewChild
 } from '@angular/core';
 import { BlurEvent, InputValidator } from './types';
 import { debounce } from 'lodash';
 import { Key } from 'ts-key-enum';
+import { FormsModule } from '@angular/forms';
+import { NgClass } from '@angular/common';
+import { AutofocusDirective } from '../../directives/autofocus.directive';
 
 @Component({
-  selector: 'app-input',
-  templateUrl: './input.component.html',
-  styleUrls: ['./input.component.scss'],
+    selector: 'app-input',
+    templateUrl: './input.component.html',
+    styleUrls: ['./input.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [FormsModule, NgClass, AutofocusDirective]
 })
 export class InputComponent implements OnInit {
-  @Input() autoFocus = false;
-  @Input() bordered = true;
-  @Input() debounceTime = 0;
-  @Input() validator: InputValidator = (value: string) => true;
-  @Input() initialValue = '';
-  @Input() placeholder = '';
-  @Output() onValidatedChange = new EventEmitter<string>();
-  @Output() onBlur = new EventEmitter<BlurEvent>();
-  @ViewChild('input') input?: ElementRef<HTMLInputElement>;
+  readonly autoFocus = input(false);
+  readonly bordered = input(true);
+  readonly debounceTime = input(0);
+  readonly validator = input<InputValidator>((value: string) => true);
+  readonly initialValue = input('');
+  readonly placeholder = input('');
+  readonly onValidatedChange = output<string>();
+  readonly onBlur = output<BlurEvent>();
+  readonly input = viewChild<ElementRef<HTMLInputElement>>('input');
 
   private _onValidatedChange: (val: string) => void = () => {};
 
@@ -40,11 +45,12 @@ export class InputComponent implements OnInit {
     const onValidatedValueChange = (val: string) =>
       this.onValidatedChange.emit(val);
 
-    this._onValidatedChange = this.debounceTime
-      ? debounce(onValidatedValueChange, this.debounceTime)
+    const debounceTime = this.debounceTime();
+    this._onValidatedChange = debounceTime
+      ? debounce(onValidatedValueChange, debounceTime)
       : onValidatedValueChange;
 
-    this.value = this.initialValue;
+    this.value = this.initialValue();
     this.validatedValue = this.value;
     this._validate();
   }
@@ -60,7 +66,7 @@ export class InputComponent implements OnInit {
   };
 
   private _validate = () => {
-    const validateResult = this.validator(this.value);
+    const validateResult = this.validator()(this.value);
     if (validateResult === true) {
       this.validatedValue = this.value;
       this._resetError();
@@ -80,7 +86,7 @@ export class InputComponent implements OnInit {
   onKeyUp = (event: KeyboardEvent) => {
     if (event.key === Key.Enter || event.key === Key.Escape) {
       this._reset();
-      this.input?.nativeElement.blur();
+      this.input()?.nativeElement.blur();
       this.onBlur.emit({
         value: this.validatedValue,
         isEsc: event.key === Key.Escape,

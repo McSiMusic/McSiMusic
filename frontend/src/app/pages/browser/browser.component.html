@@ -1,2 +1,2 @@
-<app-folders [actionEnabled]="actionEnabled"></app-folders>
-<app-tracks [actionEnabled]="actionEnabled" (selectionChanged)="selectionChanged.emit($event)"></app-tracks>
+<app-folders [actionEnabled]="actionEnabled()"></app-folders>
+<app-tracks [actionEnabled]="actionEnabled()" (selectionChanged)="selectionChanged.emit($event)"></app-tracks>

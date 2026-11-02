@@ -16,11 +16,55 @@ const trackSchema = new Schema({
   userId: String,
   date: Number,
   track: Buffer,
+  trackFileId: Schema.Types.ObjectId,
   folder: String,
 });
 
 export const User = mongoose.model("User", userSchema, "User");
 export const Track = mongoose.model("Track", trackSchema, "Track");
+
+type TrackFileId = InstanceType<typeof mongoose.mongo.ObjectId>;
+
+export interface TrackAudio {
+  track?: Buffer;
+  trackFileId?: TrackFileId;
+}
+
+const getTrackBucket = () => {
+  const database = mongoose.connection.db;
+  if (!database) throw new Error("MongoDB is not connected");
+  return new mongoose.mongo.GridFSBucket(database, { bucketName: "TrackAudio" });
+};
+
+export const storeTrackAudio = (
+  filename: string,
+  data: Buffer
+): Promise<TrackFileId> =>
+  new Promise((resolve, reject) => {
+    const stream = getTrackBucket().openUploadStream(filename);
+    stream.once("error", reject);
+    stream.once("finish", () => resolve(stream.id));
+    stream.end(data);
+  });
+
+export const getTrackAudioStream = (id: TrackFileId) =>
+  getTrackBucket().openDownloadStream(id);
+
+export const readTrackAudio = async (track: TrackAudio): Promise<Buffer> => {
+  if (track.track) return track.track;
+  if (!track.trackFileId) throw new Error("Track audio is missing");
+
+  return new Promise((resolve, reject) => {
+    const chunks: Buffer[] = [];
+    const stream = getTrackAudioStream(track.trackFileId!);
+    stream.on("data", (chunk: Buffer) => chunks.push(chunk));
+    stream.once("error", reject);
+    stream.once("end", () => resolve(Buffer.concat(chunks)));
+  });
+};
+
+export const deleteTrackAudio = (id: TrackFileId) =>
+  getTrackBucket().delete(id);
 
 export const initMongo = async () => {
   mongoose.connect(connectionString, { dbName: "McSiMusic" }).then(async () => {

@@ -1,11 +1,13 @@
-<ng-container *ngIf="isPending">
-    <app-preloader></app-preloader>
-</ng-container>
-<ng-container *ngIf="!isPending">
-    <app-header *ngIf="isAuthorized"></app-header>
-    <div class="content">
-        <router-outlet></router-outlet>
-    </div>
-</ng-container>
+@if (isPending) {
+  <app-preloader></app-preloader>
+}
+@if (!isPending) {
+  @if (isAuthorized) {
+    <app-header></app-header>
+  }
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+}
 <ng-template [portalRoot]="PortalTypeEnum.Dropdown"></ng-template>
 <ng-template [portalRoot]="PortalTypeEnum.Modal"></ng-template>

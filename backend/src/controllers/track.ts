@@ -1,5 +1,11 @@
 import { Express } from "express";
-import { Track, User } from "../mongo/init";
+import {
+  deleteTrackAudio,
+  getTrackAudioStream,
+  readTrackAudio,
+  storeTrackAudio,
+  Track,
+} from "../mongo/init";
 import jwt from "jsonwebtoken";
 import { COOKIE_NAME } from "../auth/auth";
 import { config } from "dotenv";
@@ -45,10 +51,20 @@ export const initTrackController = (express: Express) => {
 
     const trackId = req.query.trackId;
     const track = await Track.findById(trackId);
+    if (!track) return res.sendStatus(404);
 
     res.header("Accept-Ranges", "bytes");
 
-    res.send(track?.track);
+    if (track.track) return res.send(track.track);
+    if (!track.trackFileId) return res.sendStatus(404);
+
+    const stream = getTrackAudioStream(track.trackFileId);
+    stream.once("error", (error) => {
+      console.error("Failed to stream track audio", error);
+      if (!res.headersSent) res.sendStatus(404);
+      else res.destroy(error);
+    });
+    stream.pipe(res);
   });
 
   express.get("/track/metadata", async (req, res) => {
@@ -77,30 +93,39 @@ export const initTrackController = (express: Express) => {
     const files = req.files as Express.Multer.File[];
     if (files === undefined) return res.send(400);
 
-    const result = [];
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const audioMeta = await parseBuffer(file.buffer);
+    try {
+      const result = [];
+      for (const file of files) {
+        const audioMeta = await parseBuffer(file.buffer);
+        const name = Buffer.from(
+          audioMeta.common.title || path.basename(file.originalname),
+          "latin1"
+        ).toString("utf8");
+        const trackFileId = await storeTrackAudio(file.originalname, file.buffer);
 
-      const name = Buffer.from(
-        audioMeta.common.title || path.basename(file.originalname),
-        "latin1"
-      ).toString("utf8");
+        try {
+          result.push(
+            await new Track({
+              duration: audioMeta.format.duration,
+              id: new mongoose.Types.ObjectId(),
+              name,
+              trackFileId,
+              userId: userInfo.id!,
+              date: new Date(),
+              folder,
+            }).save()
+          );
+        } catch (error) {
+          await deleteTrackAudio(trackFileId);
+          throw error;
+        }
+      }
 
-      result.push(
-        await new Track({
-          duration: audioMeta.format.duration,
-          id: new mongoose.Types.ObjectId(),
-          name,
-          track: file.buffer,
-          userId: userInfo.id!,
-          date: new Date(),
-          folder,
-        }).save()
-      );
+      res.send(result);
+    } catch (error) {
+      console.error("Track upload failed", error);
+      res.status(500).json({ message: "Failed to process the uploaded audio." });
     }
-
-    res.send(result);
   });
 
   express.delete("/track", async (req, res) => {
@@ -110,7 +135,9 @@ export const initTrackController = (express: Express) => {
     ) as oauth2_v2.Schema$Userinfo;
 
     const trackId = req.query.trackId;
-    await Track.findById(trackId).remove();
+    const track = await Track.findById(trackId);
+    if (track?.trackFileId) await deleteTrackAudio(track.trackFileId);
+    if (track) await track.remove();
 
     res.send();
   });

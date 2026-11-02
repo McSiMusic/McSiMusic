@@ -1,18 +1,26 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, input, viewChild } from '@angular/core';
 import { without } from 'lodash';
 import { UserInfoService } from 'src/app/services/UserInfoService';
 import { Folder, FolderStatus } from './types';
 import { BlurEvent } from '../../../ui-components/input/types';
-import { InputComponent } from 'src/app/ui-components/input/input.component';
+import { PreloaderComponent } from '../../../components/preloader/preloader.component';
+import { NgClass } from '@angular/common';
+import { DeleteIconComponent } from '../../../icons/delete-icon/delete-icon.component';
+import { ClickStopPropagationDirective } from '../../../directives/click-stop-propagation.directive';
+import { EditIconComponent } from '../../../icons/edit-icon/edit-icon.component';
+import { InputComponent } from '../../../ui-components/input/input.component';
+import { ApplyIconComponent } from '../../../icons/apply-icon/apply-icon.component';
 
 @Component({
-  selector: 'app-folders',
-  templateUrl: './folders.component.html',
-  styleUrls: ['./folders.component.scss'],
+    selector: 'app-folders',
+    templateUrl: './folders.component.html',
+    styleUrls: ['./folders.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [PreloaderComponent, NgClass, DeleteIconComponent, ClickStopPropagationDirective, EditIconComponent, InputComponent, ApplyIconComponent]
 })
 export class FoldersComponent {
   constructor(private _userInfoService: UserInfoService) {
-    this.folders = this._userInfoService.folders!.map((name) => ({
+    this.folders = (this._userInfoService.folders ?? []).map((name) => ({
       name,
       status: FolderStatus.Idle,
     }));
@@ -20,11 +28,11 @@ export class FoldersComponent {
   foldersLoading = false;
   folders: Folder[] = [];
 
-  @Input() actionEnabled = true;
-  @ViewChild(InputComponent) input?: InputComponent;
+  readonly actionEnabled = input(true);
+  readonly input = viewChild(InputComponent);
 
   private get _currentFolder() {
-    return this._userInfoService.currentFolder.value;
+    return this._userInfoService.currentFolder();
   }
 
   isCurrentFolder = (folder: Folder) => {
@@ -65,7 +73,7 @@ export class FoldersComponent {
     folder.status = FolderStatus.Loading;
     this._userInfoService.addFolder(value).subscribe((folders) => {
       folder.status = FolderStatus.Idle;
-      this._userInfoService.currentFolder.next(folder.name);
+      this._userInfoService.setCurrentFolder(folder.name);
     });
   };
 
@@ -80,8 +88,8 @@ export class FoldersComponent {
     folder.name = value;
     folder.status = FolderStatus.Loading;
     this._userInfoService.patchFolder(value, folder.name).subscribe(() => {
-      if (this._userInfoService.currentFolder.value === oldValue) {
-        this._userInfoService.currentFolder.next(folder.name);
+      if (this._userInfoService.currentFolder() === oldValue) {
+        this._userInfoService.setCurrentFolder(folder.name);
       }
       folder.status = FolderStatus.Idle;
     });
@@ -96,7 +104,7 @@ export class FoldersComponent {
         const newCurrentFolder = this.folders.filter(
           (f) => f.status === FolderStatus.Idle
         )[0];
-        this._userInfoService.currentFolder.next(newCurrentFolder.name);
+        this._userInfoService.setCurrentFolder(newCurrentFolder?.name ?? null);
       }
     });
   }
@@ -131,7 +139,7 @@ export class FoldersComponent {
   };
 
   applyEditFolder = (folder: Folder) => {
-    const value = this.input?.validatedValue;
+    const value = this.input()?.validatedValue;
 
     if (value !== undefined) {
       if (folder.status === FolderStatus.Creating) {
@@ -144,7 +152,7 @@ export class FoldersComponent {
 
   onFolderClick = (folder: Folder) => {
     if (folder.status === FolderStatus.Idle) {
-      this._userInfoService.currentFolder.next(folder.name);
+      this._userInfoService.setCurrentFolder(folder.name);
       this.folders = this.folders.filter(
         (f) => f.status !== FolderStatus.Creating
       );
@@ -157,7 +165,8 @@ export class FoldersComponent {
   isIdle = (folder: Folder) => folder.status === FolderStatus.Idle;
 
   private _isInputValueValid = () => {
-    if (this.input === undefined) return true;
-    return this.input.errorMessage === null;
+    const inputValue = this.input();
+    if (inputValue === undefined) return true;
+    return inputValue.errorMessage === null;
   };
 }

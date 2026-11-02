@@ -1,14 +1,14 @@
-import { Component, Input, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ElementRef, ChangeDetectionStrategy, input, OutputRefSubscription } from '@angular/core';
 import { MenuItem } from './types';
 import { PortalService } from '../../services/portal/PortalService';
 import { MenuContentComponent } from './menu-content/menu-content.component';
-import { Subscription } from 'rxjs';
 import { PortalType } from '../../services/portal/types';
 
 @Component({
-  selector: 'app-menu',
-  templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.scss'],
+    selector: 'app-menu',
+    templateUrl: './menu.component.html',
+    styleUrls: ['./menu.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class MenuComponent implements OnInit {
   constructor(
@@ -16,10 +16,10 @@ export class MenuComponent implements OnInit {
     private _elementRef: ElementRef
   ) {}
 
-  @Input() elements: MenuItem[] = [];
-  @Input() selectedIndex?: number;
+  readonly elements = input<MenuItem[]>([]);
+  readonly selectedIndex = input<number>();
   menuContentElement?: MenuContentComponent;
-  private _onOutsideClickSubscription?: Subscription;
+  private _onOutsideClickSubscription?: OutputRefSubscription;
 
   private _visible = false;
   get visible() {
@@ -35,8 +35,9 @@ export class MenuComponent implements OnInit {
         PortalType.Dropdown,
         (c) => {
           this.menuContentElement = c.instance;
-          this.menuContentElement.elements = this.elements;
-          this.menuContentElement.hostElement = this._elementRef;
+          c.setInput('elements', this.elements());
+          c.setInput('hostElement', this._elementRef);
+          c.setInput('selectedIndex', this.selectedIndex());
           this._onOutsideClickSubscription =
             this.menuContentElement.onOutsideClick.subscribe(
               this.onClickOutside
@@ -44,7 +45,6 @@ export class MenuComponent implements OnInit {
         }
       );
     } else {
-      this.menuContentElement?.onOutsideClick.unsubscribe();
       this._onOutsideClickSubscription?.unsubscribe();
       this._portalService.clear(PortalType.Dropdown);
     }

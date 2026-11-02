@@ -5,7 +5,8 @@ import {
   NgZone,
   OnDestroy,
   OnInit,
-  ViewChild,
+  ChangeDetectionStrategy,
+  viewChild
 } from '@angular/core';
 import * as _ from 'lodash';
 import { clamp } from 'lodash';
@@ -13,9 +14,10 @@ import { Subscription } from 'rxjs';
 import { PlayerService } from '../../../../services/PlayerService';
 
 @Component({
-  selector: 'app-timeline',
-  templateUrl: './timeline.component.html',
-  styleUrls: ['./timeline.component.scss'],
+    selector: 'app-timeline',
+    templateUrl: './timeline.component.html',
+    styleUrls: ['./timeline.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class TimelineComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private _playerService: PlayerService, private _ngZone: NgZone) {
@@ -30,19 +32,19 @@ export class TimelineComponent implements OnInit, OnDestroy, AfterViewInit {
     );
   }
 
-  @ViewChild('timeline') timeline?: ElementRef<HTMLElement>;
+  readonly timeline = viewChild<ElementRef<HTMLElement>>('timeline');
   loadingProgress = 0;
   playingProgress = 0;
   private _handleCaptured = false;
   private _subscriptions: Subscription[] = [];
 
   ngAfterViewInit() {
-    if (this.timeline === undefined) {
+    if (this.timeline() === undefined) {
       return;
     }
 
     this._ngZone.runOutsideAngular(() => {
-      this.timeline?.nativeElement.addEventListener(
+      this.timeline()?.nativeElement.addEventListener(
         'mousedown',
         this._onMouseDown
       );
@@ -86,11 +88,12 @@ export class TimelineComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
   private _getProcentPosition = (event: MouseEvent) => {
-    if (this.timeline === undefined) {
+    const timeline = this.timeline();
+    if (timeline === undefined) {
       return 0;
     }
 
-    const rect = this.timeline.nativeElement.getBoundingClientRect();
+    const rect = timeline.nativeElement.getBoundingClientRect();
     const progress = ((event.clientX - rect.left) / rect.width) * 100;
 
     console.log(progress);
@@ -103,11 +106,12 @@ export class TimelineComponent implements OnInit, OnDestroy, AfterViewInit {
     document.removeEventListener('mousemove', this._onMouseMove);
     document.removeEventListener('mouseup', this._onMouseUp);
 
-    if (this.timeline?.nativeElement === undefined) {
+    const timeline = this.timeline();
+    if (timeline?.nativeElement === undefined) {
       return;
     }
 
-    this.timeline?.nativeElement.removeEventListener(
+    timeline?.nativeElement.removeEventListener(
       'mousedown',
       this._onMouseDown
     );

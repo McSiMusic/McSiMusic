@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'app-play-icon',
-  templateUrl: './play-icon.component.html',
-  styleUrls: ['./play-icon.component.scss']
+    selector: 'app-play-icon',
+    templateUrl: './play-icon.component.html',
+    styleUrls: ['./play-icon.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class PlayIconComponent implements OnInit {
 

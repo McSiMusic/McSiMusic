@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { AuthService } from '../AuthService';
 import { AuthStatus } from '../types';
 import { Role, RouteData } from './types';
@@ -9,7 +9,7 @@ import { PortalService } from '../portal/PortalService';
 @Injectable({
   providedIn: 'root',
 })
-export class RoleGuardService implements CanActivate {
+export class RoleGuardService  {
   constructor(
     public _authService: AuthService,
     public router: Router,

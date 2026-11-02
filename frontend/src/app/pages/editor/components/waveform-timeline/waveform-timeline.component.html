@@ -1,38 +1,44 @@
 <div class="container">
-    <div class="waveform-container" #waveFormContainer>
-        <img [src]="waveform" />
-        <app-dragger [isPrimary]="false" style.left="{{draggerPosition + '%'}}" #dragger
-            [style.cursor]="draggerCursor"></app-dragger>
-        <ng-container *ngIf="selection">
-            <div class="selection" style.left="{{selection.start + '%'}}"
-                style.width="{{ selection.end - selection.start + '%'}}"
-                style.cursor="{{ selectionMoving ? 'grabbing' : 'grab'}}"
-                [style.cursor]="selectionCursor"></div>
-            <app-dragger [isPrimary]="true" style.left="{{selection.start + '%'}}" #startDragger
-                [style.cursor]="draggerCursor"></app-dragger>
-            <app-dragger [isPrimary]="true" style.left="{{selection.end + '%'}}" #endDragger
-                [style.cursor]="draggerCursor"></app-dragger>
-        </ng-container>
+  <div class="waveform-container" #waveFormContainer>
+    <img [src]="waveform" />
+    <app-dragger [isPrimary]="false" style.left="{{draggerPosition + '%'}}" #dragger
+    [style.cursor]="draggerCursor"></app-dragger>
+    @if (selection) {
+      <div class="selection" style.left="{{selection.start + '%'}}"
+        style.width="{{ selection.end - selection.start + '%'}}"
+        style.cursor="{{ selectionMoving ? 'grabbing' : 'grab'}}"
+      [style.cursor]="selectionCursor"></div>
+      <app-dragger [isPrimary]="true" style.left="{{selection.start + '%'}}" #startDragger
+      [style.cursor]="draggerCursor"></app-dragger>
+      <app-dragger [isPrimary]="true" style.left="{{selection.end + '%'}}" #endDragger
+      [style.cursor]="draggerCursor"></app-dragger>
+    }
+  </div>
+  <div class="zoom-controls">
+    <div class="left-duration">
+      {{ leftDuration }}
     </div>
-    <div class="zoom-controls">
-        <div class="left-duration">
-            {{ leftDuration }}
-        </div>
-        <div class="zoom">
-            <app-zoomout-icon class="control"></app-zoomout-icon>
-            <div class="percent-caption">{{ zoomPercent + '%' }}</div>
-            <app-zoomin-icon class="control"></app-zoomin-icon>
-        </div>
-        <div class="right-duration">
-            {{ rightDuration }}
-        </div>
+    <div class="zoom">
+      <app-zoomout-icon class="control"></app-zoomout-icon>
+      <div class="percent-caption">{{ zoomPercent + '%' }}</div>
+      <app-zoomin-icon class="control"></app-zoomin-icon>
     </div>
-    <div class="player-controls">
-        <app-next-icon class="control prev" (click)="rewindBack()"></app-next-icon>
-        <app-play-icon class="control" *ngIf="!isPlaying()" (click)="playOrPause()"></app-play-icon>
-        <app-pause-icon class="control" *ngIf="isPlaying()" (click)="playOrPause()"></app-pause-icon>
-        <app-next-icon class="control" (click)="rewindForward()"></app-next-icon>
+    <div class="right-duration">
+      {{ rightDuration }}
     </div>
+  </div>
+  <div class="player-controls">
+    <app-next-icon class="control prev" (click)="rewindBack()"></app-next-icon>
+    @if (!isPlaying()) {
+      <app-play-icon class="control" (click)="playOrPause()"></app-play-icon>
+    }
+    @if (isPlaying()) {
+      <app-pause-icon class="control" (click)="playOrPause()"></app-pause-icon>
+    }
+    <app-next-icon class="control" (click)="rewindForward()"></app-next-icon>
+  </div>
 
-    <app-preloader *ngIf="loading"></app-preloader>
+  @if (loading) {
+    <app-preloader></app-preloader>
+  }
 </div>

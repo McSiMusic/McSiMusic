@@ -1,15 +1,18 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ChangeDetectionStrategy, input, viewChild } from '@angular/core';
+import { WaveformTimelineComponent } from '../waveform-timeline/waveform-timeline.component';
 
 @Component({
-  selector: 'app-trim',
-  templateUrl: './trim.component.html',
-  styleUrls: ['./trim.component.scss'],
+    selector: 'app-trim',
+    templateUrl: './trim.component.html',
+    styleUrls: ['./trim.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [WaveformTimelineComponent]
 })
 export class TrimComponent implements OnInit {
   constructor() {}
 
-  @ViewChild('canvas') canvas?: ElementRef<HTMLCanvasElement>;
-  @Input() trackId?: string;
+  readonly canvas = viewChild<ElementRef<HTMLCanvasElement>>('canvas');
+  readonly trackId = input<string>();
   
   ngOnInit(): void {
 

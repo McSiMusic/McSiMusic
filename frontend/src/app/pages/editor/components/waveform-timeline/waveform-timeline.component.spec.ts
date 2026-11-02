@@ -8,8 +8,8 @@ describe('WaveformTimelineComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ WaveformTimelineComponent ]
-    })
+    imports: [WaveformTimelineComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(WaveformTimelineComponent);

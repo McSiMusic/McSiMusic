@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, of, takeUntil, takeWhile, tap } from 'rxjs';
+import { Injectable, signal } from '@angular/core';
+import { of, takeUntil, takeWhile, tap } from 'rxjs';
 import { Track, User } from './types';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -13,14 +13,18 @@ export class UserInfoService {
   private _folderUrl = `${environment.backUrl}/folder`;
   private _trackUrl = `${environment.backUrl}/track`;
   private _trackUrlMetadata = `${environment.backUrl}/track/metadata`;
-  currentFolder = new BehaviorSubject<string | null>(null);
+  readonly currentFolder = signal<string | null>(null);
 
   constructor(private _http: HttpClient) {}
 
   private _userInfo: User | null = null;
   setUserInfo(userInfo: User | null) {
     this._userInfo = userInfo;
-    this.currentFolder.next(this._userInfo?.folders[0]!);
+    this.currentFolder.set(this._userInfo?.folders[0] ?? null);
+  }
+
+  setCurrentFolder(folder: string | null) {
+    this.currentFolder.set(folder);
   }
 
   get userInfo() {

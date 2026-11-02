@@ -1,8 +1,8 @@
-<app-menu [selectedIndex]="selectedIndex" [elements]="menuItems">
-    <app-button [bordered]="bordered">
+<app-menu [selectedIndex]="selectedIndex()" [elements]="menuItems">
+    <app-button [bordered]="bordered()">
         <div class="dropdown-button">
             <div class="caption">
-                {{selectedValue}}    
+                {{selectedValue()}}
             </div>
             <app-dropdown-icon></app-dropdown-icon>
         </div>

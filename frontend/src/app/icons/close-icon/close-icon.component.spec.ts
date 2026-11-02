@@ -8,8 +8,8 @@ describe('CloseIconComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CloseIconComponent ]
-    })
+    imports: [CloseIconComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(CloseIconComponent);

@@ -8,8 +8,8 @@ describe('DeleteIconComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DeleteIconComponent ]
-    })
+    imports: [DeleteIconComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(DeleteIconComponent);

@@ -5,7 +5,8 @@ import {
   ElementRef,
   NgZone,
   OnInit,
-  ViewChild,
+  ChangeDetectionStrategy,
+  viewChild
 } from '@angular/core';
 import { DropdownItem } from 'src/app/ui-components/dropdown/types';
 import { UserInfoService } from '../../services/UserInfoService';
@@ -32,11 +33,21 @@ import { sToTime } from '../../utils/durtaionConvertor';
 import { IntersectionService } from 'src/app/services/IntersectionService';
 import { PlayerService } from '../../services/PlayerService';
 import { OnDestroy } from '@angular/core';
+import { DropdownComponent } from '../../ui-components/dropdown/dropdown.component';
+import { NgClass, AsyncPipe } from '@angular/common';
+import { PlayIconComponent } from '../../icons/play-icon/play-icon.component';
+import { PauseIconComponent } from '../../icons/pause-icon/pause-icon.component';
+import { PreloaderLogoComponent } from '../../components/preloader/components/preloader-logo/preloader-logo.component';
+import { PreloaderComponent } from '../../components/preloader/preloader.component';
+import { TimelineComponent } from './components/timeline/timeline.component';
+import { NextIconComponent } from '../../icons/next-icon/next-icon.component';
 
 @Component({
-  selector: 'app-player',
-  templateUrl: './player.component.html',
-  styleUrls: ['./player.component.scss'],
+    selector: 'app-player',
+    templateUrl: './player.component.html',
+    styleUrls: ['./player.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [DropdownComponent, NgClass, PlayIconComponent, PauseIconComponent, PreloaderLogoComponent, PreloaderComponent, TimelineComponent, NextIconComponent, AsyncPipe]
 })
 export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
@@ -55,9 +66,10 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    if (this.pageLoadingAnchor === undefined) return;
+    const pageLoadingAnchor = this.pageLoadingAnchor();
+    if (pageLoadingAnchor === undefined) return;
     this._interSectionService
-      .createAndObserve(this.pageLoadingAnchor)
+      .createAndObserve(pageLoadingAnchor)
       .subscribe((value) => {
         if (!this.isLoading && value) this.loadNextPage();
       });
@@ -68,7 +80,7 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
   private _currentFolder = new BehaviorSubject<string | undefined>(undefined);
   private _page = new BehaviorSubject(0);
   tracks$?: Observable<Track[]>;
-  @ViewChild('pageLoadingAnchor') pageLoadingAnchor?: ElementRef<HTMLElement>;
+  readonly pageLoadingAnchor = viewChild<ElementRef<HTMLElement>>('pageLoadingAnchor');
   folderDropdownItems: DropdownItem<string>[] = [];
   isTracksLoaded = false;
   tracks: Track[] = [];
@@ -122,7 +134,8 @@ export class PlayerComponent implements OnInit, AfterViewInit, OnDestroy {
       this.tracks = tracks;
     });
 
-    this.onFolderChange(this._userInfoService.folders![0]);
+    const firstFolder = this._userInfoService.folders?.[0];
+    if (firstFolder !== undefined) this.onFolderChange(firstFolder);
   }
 
   loadNextPage() {

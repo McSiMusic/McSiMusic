@@ -8,8 +8,8 @@ describe('SortIconComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ SortIconComponent ]
-    })
+    imports: [SortIconComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(SortIconComponent);

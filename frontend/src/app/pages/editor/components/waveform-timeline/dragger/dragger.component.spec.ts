@@ -8,8 +8,8 @@ describe('DraggerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ DraggerComponent ]
-    })
+    imports: [DraggerComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(DraggerComponent);

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
-  selector: 'app-next-icon',
-  templateUrl: './next-icon.component.html',
-  styleUrls: ['./next-icon.component.scss']
+    selector: 'app-next-icon',
+    templateUrl: './next-icon.component.html',
+    styleUrls: ['./next-icon.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class NextIconComponent implements OnInit {
 

@@ -1,4 +1,4 @@
-import { Track } from "../mongo/init";
+import { readTrackAudio, Track } from "../mongo/init";
 import { getChannelDataFromBuffer } from "./audioService";
 import { createCanvas } from "canvas";
 import { absMean, mean, squareMean } from "../utils/math";
@@ -8,7 +8,7 @@ export const createAudioWaveForm = async (trackId: string) => {
   const track = await Track.findById(trackId);
   if (track === null) throw new Error("track not found");
 
-  let channelData = await getChannelDataFromBuffer(track.track!);
+  let channelData = await getChannelDataFromBuffer(await readTrackAudio(track));
 
   const width = 1200;
   const height = 256;

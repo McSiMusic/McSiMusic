@@ -1,5 +1,5 @@
 import { Express } from "express";
-import { Track, User } from "../mongo/init";
+import { readTrackAudio, Track } from "../mongo/init";
 import jwt from "jsonwebtoken";
 import { COOKIE_NAME } from "../auth/auth";
 import { config } from "dotenv";
@@ -16,9 +16,10 @@ export const initActionsController = (express: Express) => {
     ) as oauth2_v2.Schema$Userinfo;
 
     const trackId = req.query.trackId;
-    const track = (await Track.findById(trackId))?.track;
+    const track = await Track.findById(trackId);
+    if (!track) return res.sendStatus(404);
 
-    res.send(await getBpm(track!));
+    res.send(await getBpm(await readTrackAudio(track)));
   });
 
   express.get("/waveform", async (req, res) => {

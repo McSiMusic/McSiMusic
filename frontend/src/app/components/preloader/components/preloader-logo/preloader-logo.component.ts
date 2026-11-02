@@ -1,9 +1,10 @@
-import { Component, Input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input } from '@angular/core';
 
 @Component({
-  selector: 'app-preloader-logo',
-  templateUrl: 'preloader.svg',
+    selector: 'app-preloader-logo',
+    templateUrl: 'preloader.svg',
+    changeDetection: ChangeDetectionStrategy.Eager
 })
 export class PreloaderLogoComponent {
-  @Input() size = 50;
+  readonly size = input(50);
 }

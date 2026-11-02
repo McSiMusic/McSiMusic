@@ -8,8 +8,8 @@ describe('NextIconComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ NextIconComponent ]
-    })
+    imports: [NextIconComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(NextIconComponent);

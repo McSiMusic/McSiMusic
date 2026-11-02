@@ -1,28 +1,26 @@
 import {
   Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
+  ChangeDetectionStrategy,
+  input,
+  output
 } from '@angular/core';
+import { ButtonComponent } from '../button/button.component';
+import { NgTemplateOutlet } from '@angular/common';
 
 @Component({
-  selector: 'app-upload',
-  templateUrl: './upload.component.html',
-  styleUrls: ['./upload.component.scss'],
+    selector: 'app-upload',
+    templateUrl: './upload.component.html',
+    styleUrls: ['./upload.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [ButtonComponent, NgTemplateOutlet]
 })
-export class UploadComponent implements OnInit {
+export class UploadComponent {
   constructor() {}
 
-  @Output() onUpload = new EventEmitter<FileList | File[]>();
-  @Output() onEnter = new EventEmitter();
-  @Output() onLeave = new EventEmitter();
-  @Input() isDnd = false;
-
-  @ViewChild('uploader')
-  uploaderElement: ElementRef<HTMLInputElement> | null = null;
+  readonly onUpload = output<FileList | File[]>();
+  readonly onEnter = output();
+  readonly onLeave = output();
+  readonly isDnd = input(false);
 
   uploadFile(event: Event) {
     const inputElement = event.target as HTMLInputElement;
@@ -50,6 +48,4 @@ export class UploadComponent implements OnInit {
     const audioFiles = Array.from(files).filter((f) => f.type === 'audio/mpeg');
     this.onUpload.emit(audioFiles);
   };
-
-  ngOnInit(): void {}
 }

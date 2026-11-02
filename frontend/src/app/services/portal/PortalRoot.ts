@@ -1,22 +1,21 @@
-import { Directive, Input, ViewContainerRef, OnInit } from '@angular/core';
+import { Directive, ViewContainerRef, OnInit, input } from '@angular/core';
 import { PortalService } from './PortalService';
 import { PortalType } from './types';
 
-@Directive({
-  selector: '[portalRoot]',
-})
+@Directive({ selector: '[portalRoot]' })
 export class PortalRootDirective implements OnInit {
-  @Input() portalRoot?: PortalType;
+  readonly portalRoot = input<PortalType>();
   constructor(
     private _viewContainerRef: ViewContainerRef,
     private _portalService: PortalService
   ) {}
 
   ngOnInit(): void {
-    if (this.portalRoot === undefined) {
+    const portalRoot = this.portalRoot();
+    if (portalRoot === undefined) {
       throw new Error('Portal should have the type!');
     }
 
-    this._portalService.init(this._viewContainerRef, this.portalRoot);
+    this._portalService.init(this._viewContainerRef, portalRoot);
   }
 }

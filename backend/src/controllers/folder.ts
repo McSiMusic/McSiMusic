@@ -1,5 +1,5 @@
 import { Express } from "express";
-import { Track, User } from "../mongo/init";
+import { deleteTrackAudio, Track, User } from "../mongo/init";
 import jwt from "jsonwebtoken";
 import { COOKIE_NAME } from "../auth/auth";
 import { config } from "dotenv";
@@ -33,6 +33,10 @@ export const initFolderController = (express: Express) => {
     const user = await User.findOne({ id: userInfo.id });
     if (user) {
       user.folders = user.folders.filter((f) => f !== req.body.folder);
+      const tracks = await Track.find({ folder: req.body.folder });
+      for (const track of tracks) {
+        if (track.trackFileId) await deleteTrackAudio(track.trackFileId);
+      }
       await Track.deleteMany({ folder: req.body.folder });
       return res.send((await user.save()).folders);
     }

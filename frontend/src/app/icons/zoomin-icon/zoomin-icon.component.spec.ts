@@ -8,8 +8,8 @@ describe('ZoominIconComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ZoominIconComponent ]
-    })
+    imports: [ZoominIconComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(ZoominIconComponent);

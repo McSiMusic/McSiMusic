@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { PortalType } from 'src/app/services/portal/types';
 import { UserInfoService } from 'src/app/services/UserInfoService';
 import { MenuItem } from 'src/app/ui-components/menu/types';
 import { AuthService } from '../../services/AuthService';
 import { PortalService } from '../../services/portal/PortalService';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { MenuComponent } from '../../ui-components/menu/menu.component';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.scss'],
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [RouterLink, RouterLinkActive, MenuComponent]
 })
 export class HeaderComponent implements OnInit {
   constructor(

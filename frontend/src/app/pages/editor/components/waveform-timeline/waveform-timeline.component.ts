@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy, input, viewChild } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { clamp, uniq } from 'lodash';
 import { combineLatest, filter, fromEvent, map, merge, mergeMap, scan, Subject, takeUntil, takeWhile, tap } from 'rxjs';
@@ -9,6 +9,13 @@ import { UserInfoService } from 'src/app/services/UserInfoService';
 import { sToTime } from 'src/app/utils/durtaionConvertor';
 import { createImageFromBlob } from 'src/app/utils/imageUtils';
 import { addToRange, getNormalizedRange, intersection, isInRange, Range } from 'src/app/utils/rangeUtils';
+import { DraggerComponent } from './dragger/dragger.component';
+import { ZoomoutIconComponent } from '../../../../icons/zoomout-icon/zoomout-icon.component';
+import { ZoominIconComponent } from '../../../../icons/zoomin-icon/zoomin-icon.component';
+import { NextIconComponent } from '../../../../icons/next-icon/next-icon.component';
+import { PlayIconComponent } from '../../../../icons/play-icon/play-icon.component';
+import { PauseIconComponent } from '../../../../icons/pause-icon/pause-icon.component';
+import { PreloaderComponent } from '../../../../components/preloader/preloader.component';
 
 const PERCENT_CLICK_THRESHOLD = 2;
 type PointerAction = "move" | "click" | "moved";
@@ -18,9 +25,11 @@ interface InternalPointerEvent { initial: number, current: number, action?: Poin
 const fullRange = { start: 0, end: 100 }
 
 @Component({
-  selector: 'app-waveform-timeline',
-  templateUrl: './waveform-timeline.component.html',
-  styleUrls: ['./waveform-timeline.component.scss']
+    selector: 'app-waveform-timeline',
+    templateUrl: './waveform-timeline.component.html',
+    styleUrls: ['./waveform-timeline.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    imports: [DraggerComponent, ZoomoutIconComponent, ZoominIconComponent, NextIconComponent, PlayIconComponent, PauseIconComponent, PreloaderComponent]
 })
 export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewInit {
   
@@ -31,8 +40,8 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
     this._playerService.onPlaying.subscribe(this._onPlaying)
   }
 
-  @Input() trackId?: string;
-  @ViewChild('dragger', { read: ElementRef }) dragger?: ElementRef<HTMLDivElement>;
+  readonly trackId = input<string>();
+  readonly dragger = viewChild('dragger', { read: ElementRef });
   @ViewChild('startDragger', { read: ElementRef }) set startDragger(element: ElementRef<HTMLDivElement>) {
     if (element === undefined)
       return;
@@ -47,7 +56,7 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
     this._subscribeToPointerEvents(this._createSelectionDraggersHandler('end'), element.nativeElement, false);
   }
 
-  @ViewChild('waveFormContainer', { read: ElementRef }) waveFormContainer?: ElementRef<HTMLDivElement>;
+  readonly waveFormContainer = viewChild('waveFormContainer', { read: ElementRef });
 
   private _lastSelectionMove?: number;
   private _anchorDragger?: number;
@@ -74,13 +83,15 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   ngAfterViewInit() {
-    if (this.dragger === undefined || this.waveFormContainer === undefined)
+    const dragger = this.dragger();
+    const waveFormContainer = this.waveFormContainer();
+    if (dragger === undefined || waveFormContainer === undefined)
       return;
 
     this._subscribeToPointerEvents(({ current, action }) => {
       this._setState(action === 'moved' ? 'idle' : 'draggermoving')
       this._changeDraggerPosition(current);
-    }, this.dragger.nativeElement, false);
+    }, dragger.nativeElement, false);
 
     this._subscribeToPointerEvents(({ initial, current, action }) => {
       if (action !== "click") {
@@ -104,7 +115,7 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
       } else {
         this._changeDraggerPosition(current);
       }
-    }, this.waveFormContainer.nativeElement);
+    }, waveFormContainer.nativeElement);
   }
 
   private _createSelectionDraggersHandler = (draggerType: 'start' | 'end') => ({ current, action }: InternalPointerEvent) => {
@@ -189,7 +200,7 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   private _getPercentFromPointerEvent = (pointerEvent: MouseEvent) => {
-    const waveFormContainerElement = this.waveFormContainer?.nativeElement;
+    const waveFormContainerElement = this.waveFormContainer()?.nativeElement;
     return waveFormContainerElement ?
       ((pointerEvent.clientX - waveFormContainerElement.offsetLeft) / waveFormContainerElement.offsetWidth) * 100
       : 0;
@@ -208,7 +219,8 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   isPlaying = () => {
-    return this.trackId && this._playerService.isCurrentTrack(this.trackId) && this._playerService.isPlaying()
+    const trackId = this.trackId();
+    return trackId && this._playerService.isCurrentTrack(trackId) && this._playerService.isPlaying()
   }
 
   playOrPause = () => {
@@ -227,12 +239,13 @@ export class WaveformTimelineComponent implements OnInit, OnDestroy, AfterViewIn
   }
 
   createAudioWaveForm = () => {
-    if (this.trackId === undefined)
+    const trackId = this.trackId();
+    if (trackId === undefined)
       return;
     this.loading = true;
     combineLatest([
-      this._actionsService.getWaveForm(this.trackId).pipe(mergeMap((wv) => createImageFromBlob(wv.body!))),
-      this._userInfoService.getTrackMeta(this.trackId)]
+      this._actionsService.getWaveForm(trackId).pipe(mergeMap((wv) => createImageFromBlob(wv.body!))),
+      this._userInfoService.getTrackMeta(trackId)]
     ).subscribe(([waveworm, meta]) => {
       this.trackMeta = meta;
       this.waveform = this._sanitizer.bypassSecurityTrustResourceUrl(waveworm) as string;

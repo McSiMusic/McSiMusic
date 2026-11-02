@@ -8,8 +8,8 @@ describe('GetBpmComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ GetBpmComponent ]
-    })
+    imports: [GetBpmComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(GetBpmComponent);
